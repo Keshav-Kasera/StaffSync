@@ -32,9 +32,11 @@ import {
   EventNote as EventNoteIcon,
   PendingActions as PendingIcon,
   CalendarMonth as CalendarIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import axiosClient from '../api/axiosClient';
+import { exportToCsv } from '../utils/exportCsv';
 
 const Leaves = () => {
   const { user } = useAuth();
@@ -162,6 +164,35 @@ const Leaves = () => {
     setOpenReviewModal(true);
   };
 
+  const handleExportMyLeaves = () => {
+    const headers = ['Type', 'Start Date', 'End Date', 'Days', 'Reason', 'Status', 'Reviewer Note'];
+    const rows = myLeaves.map((l) => [
+      l.leaveType,
+      new Date(l.startDate).toLocaleDateString(),
+      new Date(l.endDate).toLocaleDateString(),
+      l.totalDays,
+      l.reason,
+      l.status,
+      l.reviewComment || '—',
+    ]);
+    exportToCsv('My_Leave_Applications', headers, rows);
+  };
+
+  const handleExportAllLeaves = () => {
+    const headers = ['Employee', 'Department', 'Type', 'Start Date', 'End Date', 'Days', 'Status', 'Reviewed By'];
+    const rows = allLeaves.map((l) => [
+      l.user?.name || '',
+      l.employee?.department || '',
+      l.leaveType,
+      new Date(l.startDate).toLocaleDateString(),
+      new Date(l.endDate).toLocaleDateString(),
+      l.totalDays,
+      l.status,
+      l.reviewedBy ? l.reviewedBy.name : '—',
+    ]);
+    exportToCsv('Company_Wide_Leaves_Ledger', headers, rows);
+  };
+
   return (
     <Box>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
@@ -239,9 +270,20 @@ const Leaves = () => {
       {/* Tab 0: My Leaves */}
       {tabIndex === 0 && (
         <Card sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            My Applications & Status History
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              My Applications & Status History
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
+              onClick={handleExportMyLeaves}
+              sx={{ borderColor: 'rgba(255, 255, 255, 0.15)', color: '#8b949e', fontSize: 12, '&:hover': { borderColor: '#10b981', color: '#10b981' } }}
+            >
+              Export CSV
+            </Button>
+          </Box>
           <TableContainer>
             <Table>
               <TableHead>
@@ -352,9 +394,20 @@ const Leaves = () => {
       {/* Tab 2: All Company Leaves (HR only) */}
       {tabIndex === 2 && user?.role === 'hr' && (
         <Card sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            Company-Wide Leave Records
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Company-Wide Leave Records
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
+              onClick={handleExportAllLeaves}
+              sx={{ borderColor: 'rgba(255, 255, 255, 0.15)', color: '#8b949e', fontSize: 12, '&:hover': { borderColor: '#10b981', color: '#10b981' } }}
+            >
+              Export CSV
+            </Button>
+          </Box>
           <TableContainer>
             <Table>
               <TableHead>

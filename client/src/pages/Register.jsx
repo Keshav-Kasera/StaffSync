@@ -53,11 +53,11 @@ const Register = () => {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      return setError('Passwords do not match');
+      return setError('Cryptographic password confirmation mismatch');
     }
 
     if (formData.password.length < 6) {
-      return setError('Password must be at least 6 characters long');
+      return setError('Password entropy insufficient: minimum 6 characters required');
     }
 
     setSubmitting(true);
@@ -65,7 +65,7 @@ const Register = () => {
       await register(formData);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || 'Enrollment rejected. Please verify details.');
     } finally {
       setSubmitting(false);
     }
@@ -73,13 +73,13 @@ const Register = () => {
 
   return (
     <Box
+      className="tech-grid"
       sx={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0f172a',
-        background: 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)',
+        backgroundColor: '#08090a',
         p: 2,
         py: 6,
       }}
@@ -88,40 +88,41 @@ const Register = () => {
         sx={{
           maxWidth: 520,
           width: '100%',
-          borderRadius: 3,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          border: '1px solid #334155',
-          backgroundColor: '#ffffff',
+          borderRadius: 2,
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(16, 185, 129, 0.06)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          backgroundColor: '#0c0e12',
           overflow: 'hidden',
         }}
       >
-        <Box sx={{ p: 3.5, pb: 2.5, textAlign: 'center', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+        <Box sx={{ p: 3.5, pb: 2.5, textAlign: 'center', backgroundColor: '#090a0d', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
           <Box
             sx={{
-              width: 44,
-              height: 44,
-              borderRadius: 2,
-              backgroundColor: '#0f172a',
+              width: 40,
+              height: 40,
+              borderRadius: 1.5,
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#ffffff',
+              color: '#10b981',
               margin: '0 auto 10px',
             }}
           >
-            <RegisterIcon sx={{ fontSize: 22 }} />
+            <RegisterIcon sx={{ fontSize: 20 }} />
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: '#f3f4f6', letterSpacing: '-0.02em', fontSize: 20 }}>
             New Personnel Enrollment
           </Typography>
-          <Typography variant="body2" sx={{ color: '#64748b', fontSize: 13, mt: 0.5 }}>
-            Create an internal staff account to access the workspace
+          <Typography variant="caption" sx={{ color: '#8b949e', mt: 0.5, display: 'block', fontSize: 11 }}>
+            PROVISION ROLE-BASED WORKSPACE CREDENTIALS
           </Typography>
         </Box>
 
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: 3.5 }}>
           {error && (
-            <Alert severity="error" sx={{ mb: 3, borderRadius: 2, fontSize: 13 }}>
+            <Alert severity="error" sx={{ mb: 2.5, borderRadius: 1.5, fontSize: 12, bgcolor: 'rgba(244, 63, 94, 0.1)', color: '#fb7185', border: '1px solid rgba(244, 63, 94, 0.3)' }}>
               {error}
             </Alert>
           )}
@@ -129,83 +130,93 @@ const Register = () => {
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  FULL LEGAL NAME
+                </Typography>
                 <TextField
                   required
                   fullWidth
-                  size="small"
                   id="name"
-                  label="Full Legal Name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder="e.g. Alex Morgan"
                 />
               </Grid>
 
               <Grid item xs={12}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  WORK EMAIL ADDRESS
+                </Typography>
                 <TextField
                   required
                   fullWidth
-                  size="small"
                   id="email"
-                  label="Work Email Address"
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
+                  placeholder="e.g. alex.morgan@staffsync.com"
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  PASSWORD
+                </Typography>
                 <TextField
                   required
                   fullWidth
-                  size="small"
                   name="password"
-                  label="Password"
                   type="password"
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
+                  placeholder="••••••••••••"
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  CONFIRM PASSWORD
+                </Typography>
                 <TextField
                   required
                   fullWidth
-                  size="small"
                   name="confirmPassword"
-                  label="Confirm Password"
                   type="password"
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  placeholder="••••••••••••"
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  ORGANIZATIONAL ROLE
+                </Typography>
                 <TextField
                   select
                   fullWidth
-                  size="small"
                   name="role"
-                  label="Staff Role"
                   value={formData.role}
                   onChange={handleChange}
                 >
-                  <MenuItem value="employee">Employee</MenuItem>
-                  <MenuItem value="manager">Manager</MenuItem>
-                  <MenuItem value="hr">HR Personnel</MenuItem>
+                  <MenuItem value="employee">Employee (Self-Service)</MenuItem>
+                  <MenuItem value="manager">Manager (Team Oversight)</MenuItem>
+                  <MenuItem value="hr">HR Personnel (System Admin)</MenuItem>
                 </TextField>
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  DEPARTMENT
+                </Typography>
                 <TextField
                   select
                   fullWidth
-                  size="small"
                   name="department"
-                  label="Department"
                   value={formData.department}
                   onChange={handleChange}
                 >
@@ -218,24 +229,28 @@ const Register = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  JOB DESIGNATION
+                </Typography>
                 <TextField
                   fullWidth
-                  size="small"
                   name="designation"
-                  label="Designation / Title"
                   value={formData.designation}
                   onChange={handleChange}
+                  placeholder="e.g. Senior Software Engineer"
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, display: 'block', mb: 0.6 }}>
+                  CONTACT PHONE
+                </Typography>
                 <TextField
                   fullWidth
-                  size="small"
                   name="phone"
-                  label="Contact Phone"
                   value={formData.phone}
                   onChange={handleChange}
+                  placeholder="+1 (555) 019-2831"
                 />
               </Grid>
             </Grid>
@@ -250,23 +265,24 @@ const Register = () => {
                 mt: 3,
                 mb: 2,
                 py: 1.2,
-                fontSize: 14,
-                backgroundColor: '#0f172a',
-                '&:hover': { backgroundColor: '#1e293b' },
+                fontSize: 13,
+                fontWeight: 700,
+                backgroundColor: '#10b981',
+                color: '#041e15',
+                '&:hover': { backgroundColor: '#34d399', boxShadow: '0 0 16px rgba(16, 185, 129, 0.4)' },
               }}
             >
-              {submitting ? <CircularProgress size={20} color="inherit" /> : 'Complete Registration'}
+              {submitting ? <CircularProgress size={20} color="inherit" /> : 'Complete Provisioning'}
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 13 }}>
-                Already registered?{' '}
+              <Typography variant="body2" sx={{ color: '#8b949e', fontSize: 12 }}>
+                Already provisioned?{' '}
                 <Link
                   component="button"
                   type="button"
-                  variant="body2"
                   onClick={() => navigate('/login')}
-                  sx={{ fontWeight: 700, color: '#4f46e5', textDecoration: 'none' }}
+                  sx={{ fontWeight: 700, color: '#10b981', textDecoration: 'none', cursor: 'pointer' }}
                 >
                   Sign in
                 </Link>

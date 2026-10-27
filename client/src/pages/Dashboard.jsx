@@ -34,27 +34,27 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosClient from '../api/axiosClient';
 
-// Palette mapping for clean, professional, perfectly centered card icons
+// Palette mapping for Obsidian Technical Grid
 const colorStyles = {
   primary: {
-    bg: '#eef2ff',
-    iconColor: '#4f46e5',
-    border: '#c7d2fe',
+    bg: 'rgba(16, 185, 129, 0.08)',
+    iconColor: '#10b981',
+    border: 'rgba(16, 185, 129, 0.25)',
   },
   secondary: {
-    bg: '#ecfeff',
-    iconColor: '#0891b2',
-    border: '#a5f3fc',
+    bg: 'rgba(56, 189, 248, 0.08)',
+    iconColor: '#38bdf8',
+    border: 'rgba(56, 189, 248, 0.25)',
   },
   success: {
-    bg: '#ecfdf5',
-    iconColor: '#059669',
-    border: '#a7f3d0',
+    bg: 'rgba(16, 185, 129, 0.08)',
+    iconColor: '#10b981',
+    border: 'rgba(16, 185, 129, 0.25)',
   },
   warning: {
-    bg: '#fffbeb',
-    iconColor: '#d97706',
-    border: '#fde68a',
+    bg: 'rgba(245, 158, 11, 0.08)',
+    iconColor: '#f59e0b',
+    border: 'rgba(245, 158, 11, 0.25)',
   },
 };
 
@@ -65,17 +65,17 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) =
     <Card
       sx={{
         height: '100%',
-        p: 3,
-        borderRadius: 3,
-        border: '1px solid #e2e8f0',
-        backgroundColor: '#ffffff',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+        p: 2.8,
+        borderRadius: 2,
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        backgroundColor: '#0f1115',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        transition: 'transform 0.15s, box-shadow 0.15s',
+        transition: 'all 0.15s ease',
         '&:hover': {
-          boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+          borderColor: 'rgba(16, 185, 129, 0.3)',
         },
       }}
     >
@@ -84,11 +84,12 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) =
           <Typography
             variant="caption"
             sx={{
-              fontWeight: 800,
-              color: '#64748b',
+              fontWeight: 700,
+              color: '#8b949e',
               textTransform: 'uppercase',
-              letterSpacing: 0.8,
-              fontSize: 11,
+              letterSpacing: '0.06em',
+              fontSize: 10,
+              fontFamily: '"JetBrains Mono", monospace',
               display: 'block',
               mb: 0.8,
             }}
@@ -99,9 +100,10 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) =
             variant="h4"
             sx={{
               fontWeight: 900,
-              color: '#0f172a',
+              color: '#f3f4f6',
               lineHeight: 1.1,
-              letterSpacing: '-0.02em',
+              fontFamily: '"JetBrains Mono", monospace',
+              letterSpacing: '-0.03em',
             }}
           >
             {value}
@@ -219,11 +221,11 @@ const Dashboard = () => {
       {/* Welcome Header */}
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
             Welcome back, {user?.name}
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            Here is what's happening today in your workspace.
+          <Typography variant="body1" sx={{ color: '#8b949e', mt: 0.5 }}>
+            Operational workforce telemetry and governance ledger.
           </Typography>
         </Box>
         <Chip

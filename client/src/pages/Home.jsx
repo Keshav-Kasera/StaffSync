@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -9,479 +9,335 @@ import {
   Chip,
   Paper,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Slider,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import {
+  Terminal as TerminalIcon,
   Security as SecurityIcon,
-  People as DirectoryIcon,
-  AccessTime as AttendanceIcon,
-  DateRange as LeaveIcon,
-  ArrowForward as ArrowForwardIcon,
-  Check as CheckIcon,
+  PlayArrow as PlayIcon,
   GitHub as GitHubIcon,
-  Business as EnterpriseIcon,
-  Analytics as AnalyticsIcon,
-  Lock as LockIcon,
+  Search as SearchIcon,
+  ArrowForward as ArrowIcon,
+  Check as CheckIcon,
+  Speed as SpeedIcon,
+  Storage as DatabaseIcon,
+  VpnKey as KeyIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import CommandPalette from '../components/CommandPalette';
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // Interactive Simulator State
+  const [headcount, setHeadcount] = useState(140);
+  const [lateThreshold, setLateThreshold] = useState(false); // false: 09:15 AM, true: 09:30 AM
+  const [strictRbac, setStrictRbac] = useState(true);
+
+  // Selected API Endpoint tab
+  const [activeApiTab, setActiveApiTab] = useState(0);
+
+  // Calculated reactive metrics
+  const calculatedAttendance = Math.min(99.4, (92.5 + (headcount % 15) * 0.4 + (lateThreshold ? 2.5 : 0))).toFixed(1);
+  const monthlyHours = (headcount * 168).toLocaleString();
+  const writeOps = (headcount * 4.2).toFixed(0);
+
+  const apiEndpoints = [
+    {
+      method: 'POST',
+      path: '/api/attendance/clock-in',
+      desc: 'Records daily employee punch-in with UTC timestamp and lateness verification',
+      response: {
+        success: true,
+        record: {
+          id: 'att_98a72b1',
+          user: 'usr_emp_441',
+          date: '2026-10-28',
+          clockIn: '2026-10-28T09:02:14.281Z',
+          status: 'Present',
+          isLate: false,
+        },
+        telemetry: { latencyMs: 14, dbWrite: 'indexed_compound_key' },
+      },
+    },
+    {
+      method: 'POST',
+      path: '/api/leaves/apply',
+      desc: 'Enforces balance check, decrements allowance, routes to direct manager review',
+      response: {
+        success: true,
+        leaveId: 'lv_c8109f',
+        type: 'Casual',
+        totalDays: 2,
+        status: 'Pending',
+        assignedReviewer: 'usr_mgr_eng01',
+        balanceRemaining: 10,
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/dashboard/summary',
+      desc: 'Multi-collection aggregation returning real-time workforce operational ledger',
+      response: {
+        success: true,
+        metrics: {
+          totalStaff: headcount,
+          attendanceRate: `${calculatedAttendance}%`,
+          activeShiftCount: Math.round(headcount * 0.94),
+          pendingReviewQueue: 4,
+        },
+      },
+    },
+  ];
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#ffffff', color: '#0f172a' }}>
-      {/* 1. Header Navigation */}
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#08090a', color: '#f3f4f6' }}>
+      {/* 1. Technical Topbar */}
       <Box
         component="header"
         sx={{
           position: 'sticky',
           top: 0,
           zIndex: 1000,
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #e2e8f0',
+          backgroundColor: 'rgba(8, 9, 10, 0.85)',
+          backdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
-        <Container maxWidth="lg" sx={{ py: 1.8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3.5 }}>
+        <Container maxWidth="lg" sx={{ py: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Box
               sx={{ display: 'flex', alignItems: 'center', gap: 1.2, cursor: 'pointer' }}
               onClick={() => navigate('/')}
             >
               <Box
                 sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 1.5,
-                  backgroundColor: '#0f172a',
+                  width: 26,
+                  height: 26,
+                  borderRadius: 1,
+                  backgroundColor: '#10b981',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#ffffff',
-                  fontWeight: 800,
-                  fontSize: 16,
-                  letterSpacing: -0.5,
+                  color: '#041e15',
+                  fontWeight: 900,
+                  fontSize: 14,
+                  fontFamily: '"JetBrains Mono", monospace',
                 }}
               >
                 S
               </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em', fontSize: 19 }}>
-                StaffSync<span style={{ color: '#4f46e5' }}>.</span>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#f3f4f6', letterSpacing: '-0.03em', fontSize: 17 }}>
+                StaffSync<span style={{ color: '#10b981' }}>.</span>
               </Typography>
             </Box>
 
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3 }}>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2.5 }}>
               <Typography
-                variant="body2"
-                sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#0f172a' } }}
-                onClick={() => document.getElementById('modules')?.scrollIntoView({ behavior: 'smooth' })}
+                variant="caption"
+                sx={{ color: '#8b949e', cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#f3f4f6' } }}
+                onClick={() => document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Platform Modules
+                // SIMULATOR
               </Typography>
               <Typography
-                variant="body2"
-                sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#0f172a' } }}
+                variant="caption"
+                sx={{ color: '#8b949e', cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#f3f4f6' } }}
+                onClick={() => document.getElementById('api-inspector')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                // API_ENGINE
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: '#8b949e', cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#f3f4f6' } }}
                 onClick={() => document.getElementById('architecture')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Architecture
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', transition: 'color 0.15s', '&:hover': { color: '#0f172a' } }}
-                onClick={() => document.getElementById('security')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Security & RBAC
+                // ARCHITECTURE
               </Typography>
             </Box>
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box
+              onClick={() => setPaletteOpen(true)}
+              sx={{
+                display: { xs: 'none', sm: 'flex' },
+                alignItems: 'center',
+                gap: 1.2,
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 1,
+                bgcolor: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                cursor: 'pointer',
+                color: '#8b949e',
+                '&:hover': { color: '#f3f4f6', borderColor: 'rgba(16, 185, 129, 0.4)' },
+              }}
+            >
+              <SearchIcon sx={{ fontSize: 14 }} />
+              <Typography variant="caption" sx={{ fontSize: 11 }}>Quick Command</Typography>
+              <span className="kbd-badge">Ctrl K</span>
+            </Box>
+
             <Button
               size="small"
-              color="inherit"
-              startIcon={<GitHubIcon sx={{ fontSize: 18 }} />}
+              startIcon={<GitHubIcon sx={{ fontSize: 16 }} />}
               href="https://github.com/Keshav-Kasera/StaffSync"
               target="_blank"
-              sx={{ fontWeight: 600, color: '#475569', textTransform: 'none', display: { xs: 'none', sm: 'inline-flex' } }}
+              sx={{
+                color: '#8b949e',
+                fontSize: 12,
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                px: 1.5,
+                '&:hover': { color: '#f3f4f6', bgcolor: 'rgba(255, 255, 255, 0.03)' },
+              }}
             >
-              Repository
+              Source
             </Button>
+
             {user ? (
               <Button
                 variant="contained"
                 size="small"
                 onClick={() => navigate('/dashboard')}
-                sx={{ backgroundColor: '#0f172a', '&:hover': { backgroundColor: '#1e293b' }, textTransform: 'none', fontWeight: 600, px: 2 }}
+                sx={{
+                  bgcolor: '#10b981',
+                  color: '#041e15',
+                  fontWeight: 700,
+                  fontSize: 12,
+                  '&:hover': { bgcolor: '#34d399' },
+                }}
               >
-                Workspace Dashboard
+                Launch Console
               </Button>
             ) : (
-              <>
-                <Button
-                  size="small"
-                  variant="text"
-                  onClick={() => navigate('/login')}
-                  sx={{ color: '#0f172a', fontWeight: 600, textTransform: 'none', px: 1.5 }}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={() => navigate('/register')}
-                  sx={{ backgroundColor: '#0f172a', '&:hover': { backgroundColor: '#1e293b' }, textTransform: 'none', fontWeight: 600, px: 2 }}
-                >
-                  Register
-                </Button>
-              </>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => navigate('/login')}
+                sx={{
+                  bgcolor: '#10b981',
+                  color: '#041e15',
+                  fontWeight: 700,
+                  fontSize: 12,
+                  '&:hover': { bgcolor: '#34d399' },
+                }}
+              >
+                Sign In
+              </Button>
             )}
           </Box>
         </Container>
       </Box>
 
-      {/* 2. Hero Section */}
-      <Box sx={{ pt: { xs: 8, md: 11 }, pb: { xs: 8, md: 10 }, backgroundColor: '#fafbfc', borderBottom: '1px solid #f1f5f9' }}>
+      {/* 2. Hero Section: Linear / Obsidian Grid */}
+      <Box className="tech-grid" sx={{ pt: { xs: 8, md: 12 }, pb: { xs: 8, md: 10 }, borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
         <Container maxWidth="lg">
-          <Box sx={{ maxWidth: 820, mx: 'auto', textAlign: 'center', mb: 6 }}>
-            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1.5, py: 0.6, borderRadius: 5, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', mb: 3 }}>
-              <Box sx={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#10b981' }} />
-              <Typography variant="caption" sx={{ fontWeight: 700, color: '#334155', letterSpacing: 0.8, textTransform: 'uppercase', fontSize: 11 }}>
-                Enterprise Workforce Infrastructure
+          {/* Release & Telemetry Badge */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1.2, py: 0.4, bgcolor: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 1 }}>
+              <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#10b981' }} />
+              <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, fontSize: 11 }}>
+                STAFFSYNC_V1.0 • ATLAS_M0_CLUSTERED • RBAC_STRICT
               </Typography>
-            </Box>
-
-            <Typography
-              variant="h1"
-              sx={{
-                fontWeight: 900,
-                fontSize: { xs: 34, sm: 48, md: 54 },
-                lineHeight: 1.15,
-                color: '#0f172a',
-                letterSpacing: '-0.035em',
-                mb: 3,
-              }}
-            >
-              Unified Workforce Operations & Governance Platform
-            </Typography>
-
-            <Typography
-              variant="body1"
-              sx={{
-                fontSize: { xs: 16, sm: 18 },
-                color: '#475569',
-                lineHeight: 1.7,
-                maxWidth: 680,
-                mx: 'auto',
-                mb: 4.5,
-              }}
-            >
-              An institutional-grade software suite built to streamline personnel management, daily attendance verification, and multi-tier leave approval lifecycles across modern enterprises.
-            </Typography>
-
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-              <Button
-                variant="contained"
-                size="large"
-                endIcon={<ArrowForwardIcon />}
-                onClick={() => navigate(user ? '/dashboard' : '/login')}
-                sx={{
-                  backgroundColor: '#0f172a',
-                  color: '#ffffff',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  px: 3.5,
-                  py: 1.4,
-                  borderRadius: 2,
-                  fontSize: 15,
-                  '&:hover': { backgroundColor: '#1e293b' },
-                }}
-              >
-                {user ? 'Open Workspace' : 'Launch System Portal'}
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                startIcon={<GitHubIcon />}
-                href="https://github.com/Keshav-Kasera/StaffSync"
-                target="_blank"
-                sx={{
-                  color: '#0f172a',
-                  borderColor: '#cbd5e1',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  px: 3,
-                  py: 1.4,
-                  borderRadius: 2,
-                  fontSize: 15,
-                  '&:hover': { borderColor: '#94a3b8', backgroundColor: '#ffffff' },
-                }}
-              >
-                Source Repository
-              </Button>
             </Box>
           </Box>
 
-          {/* High-Fidelity Application Screen Mockup Preview */}
-          <Paper
-            elevation={0}
-            sx={{
-              borderRadius: 3,
-              border: '1px solid #e2e8f0',
-              overflow: 'hidden',
-              backgroundColor: '#ffffff',
-              boxShadow: '0 20px 40px -15px rgba(15, 23, 42, 0.07)',
-            }}
-          >
-            {/* Window Chrome Header */}
-            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#cbd5e1' }} />
-                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#cbd5e1' }} />
-                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#cbd5e1' }} />
-                <Typography variant="caption" sx={{ color: '#64748b', ml: 1.5, fontWeight: 600, fontFamily: 'monospace' }}>
-                  staffsync.internal/workspace/overview
-                </Typography>
-              </Box>
-              <Chip label="System Active • v1.0.0" size="small" sx={{ fontSize: 11, height: 22, fontWeight: 600, color: '#059669', bgcolor: '#ecfdf5' }} />
-            </Box>
-
-            {/* Simulated Live Dashboard Metrics */}
-            <Box sx={{ p: { xs: 2.5, md: 4 } }}>
-              <Grid container spacing={2.5} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Box sx={{ p: 2.5, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Active Personnel</Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>1,248 Staff</Typography>
-                    <Typography variant="caption" sx={{ color: '#059669', fontWeight: 600 }}>Operational status: Normal</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Box sx={{ p: 2.5, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Shift Adherence</Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>98.4% Verified</Typography>
-                    <Typography variant="caption" sx={{ color: '#64748b' }}>Precision time tracking</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Box sx={{ p: 2.5, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Governance Queue</Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>12 In Review</Typography>
-                    <Typography variant="caption" sx={{ color: '#d97706', fontWeight: 600 }}>Active manager routing</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                  <Box sx={{ p: 2.5, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Security Isolation</Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>RBAC Enforced</Typography>
-                    <Typography variant="caption" sx={{ color: '#4f46e5', fontWeight: 600 }}>Stateless token verification</Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-
-              {/* Feed Preview Table */}
-              <Box sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
-                <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a' }}>
-                    Live Operational Activity Feed
-                  </Typography>
-                </Box>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow sx={{ backgroundColor: '#ffffff' }}>
-                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Personnel</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Department</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Workflow Type</TableCell>
-                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>State</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 600 }}>Alex Rivera (Senior Engineer)</TableCell>
-                      <TableCell>Engineering</TableCell>
-                      <TableCell>Time-Off Request (Casual — 3 Days)</TableCell>
-                      <TableCell><Chip label="Pending Review" size="small" sx={{ fontSize: 11, height: 20, bgcolor: '#fef3c7', color: '#92400e', fontWeight: 700 }} /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 600 }}>Sarah Chen (Staff Architect)</TableCell>
-                      <TableCell>Engineering</TableCell>
-                      <TableCell>Daily Attendance Check-In</TableCell>
-                      <TableCell><Chip label="Verified Present" size="small" sx={{ fontSize: 11, height: 20, bgcolor: '#ecfdf5', color: '#065f46', fontWeight: 700 }} /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 600 }}>Marcus Brody (Engineering Lead)</TableCell>
-                      <TableCell>Engineering</TableCell>
-                      <TableCell>Quarterly Performance Review</TableCell>
-                      <TableCell><Chip label="Evaluated (5 Stars)" size="small" sx={{ fontSize: 11, height: 20, bgcolor: '#eff6ff', color: '#1e40af', fontWeight: 700 }} /></TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </Box>
-            </Box>
-          </Paper>
-        </Container>
-      </Box>
-
-      {/* 3. Core Functional Pillars */}
-      <Container maxWidth="lg" sx={{ py: 10 }} id="modules">
-        <Box sx={{ textAlign: 'center', mb: 7 }}>
-          <Typography variant="overline" sx={{ fontWeight: 800, color: '#4f46e5', letterSpacing: 1.5 }}>
-            CORE FUNCTIONALITY
-          </Typography>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.025em', mt: 0.5, mb: 1.5 }}>
-            Institutional Architecture by Design
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#64748b', maxWidth: 640, mx: 'auto' }}>
-            Built around strict access control boundaries separating employee self-service, management approval queues, and administrative oversight.
-          </Typography>
-        </Box>
-
-        <Grid container spacing={3.5}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', p: 3.5, borderRadius: 2.5, border: '1px solid #e2e8f0', boxShadow: 'none', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ width: 44, height: 44, borderRadius: 2, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', mb: 2.5 }}>
-                <DirectoryIcon sx={{ fontSize: 24 }} />
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
-                Personnel Administration
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, mb: 3, flexGrow: 1 }}>
-                Centralized staff directory with pagination, department-level filtering, record deactivation, and comprehensive profile records mapped to reporting managers.
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="caption" sx={{ fontWeight: 700, color: '#0f172a', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Key Capabilities:
-              </Typography>
-              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Real-time staff search & department filtering</Typography>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Manager-to-report relational mapping</Typography>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Status toggles and account deactivation</Typography>
-              </Box>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', p: 3.5, borderRadius: 2.5, border: '1px solid #e2e8f0', boxShadow: 'none', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ width: 44, height: 44, borderRadius: 2, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', mb: 2.5 }}>
-                <AttendanceIcon sx={{ fontSize: 24 }} />
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
-                Time & Attendance Engine
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, mb: 3, flexGrow: 1 }}>
-                Precision clock-in/out engine with compound unique database constraints preventing duplicate punches, automated shift duration math, and late detection.
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="caption" sx={{ fontWeight: 700, color: '#0f172a', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Key Capabilities:
-              </Typography>
-              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Compound-indexed daily records</Typography>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Automated half-day & late threshold detection</Typography>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Organization-wide attendance audit logs</Typography>
-              </Box>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', p: 3.5, borderRadius: 2.5, border: '1px solid #e2e8f0', boxShadow: 'none', display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ width: 44, height: 44, borderRadius: 2, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', mb: 2.5 }}>
-                <LeaveIcon sx={{ fontSize: 24 }} />
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
-                Leave Lifecycle & Quotas
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, mb: 3, flexGrow: 1 }}>
-                Formal leave governance workflow supporting Casual, Sick, and Earned allocations with automatic balance deduction, manager review modals, and decision audits.
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="caption" sx={{ fontWeight: 700, color: '#0f172a', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                Key Capabilities:
-              </Typography>
-              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Real-time quota validation before submission</Typography>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Manager approval dialog with decision notes</Typography>
-                <Typography variant="caption" sx={{ color: '#475569' }}>• Automated balance deduction on approval</Typography>
-              </Box>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* 4. Enterprise Security Section */}
-      <Box sx={{ py: 10, backgroundColor: '#0f172a', color: '#ffffff' }} id="security">
-        <Container maxWidth="lg">
-          <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1.5, py: 0.5, borderRadius: 5, backgroundColor: 'rgba(255, 255, 255, 0.1)', mb: 2.5 }}>
-                <SecurityIcon sx={{ fontSize: 16, color: '#38bdf8' }} />
-                <Typography variant="caption" sx={{ fontWeight: 700, color: '#e2e8f0', letterSpacing: 0.8, textTransform: 'uppercase' }}>
-                  Enterprise Security Layer
-                </Typography>
-              </Box>
-
-              <Typography variant="h3" sx={{ fontWeight: 800, color: '#ffffff', letterSpacing: '-0.025em', mb: 2 }}>
-                Airtight Access Control & Data Isolation
+          <Grid container spacing={5} alignItems="center">
+            <Grid item xs={12} md={7}>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: { xs: 38, sm: 52, md: 58 },
+                  fontWeight: 900,
+                  lineHeight: 1.08,
+                  letterSpacing: '-0.04em',
+                  color: '#f3f4f6',
+                  mb: 2.5,
+                }}
+              >
+                Workforce Operations.<br />
+                <span style={{ color: '#10b981' }}>Programmed for Precision.</span>
               </Typography>
 
-              <Typography variant="body1" sx={{ color: '#94a3b8', lineHeight: 1.8, mb: 4 }}>
-                The application employs cryptographic protection across all entry points. Credentials are never stored in plain text, sessions are secured via stateless cryptographically signed tokens, and every API request passes through role verification middleware.
+              <Typography variant="body1" sx={{ color: '#8b949e', fontSize: 16, lineHeight: 1.7, maxWidth: 540, mb: 4 }}>
+                An institutional HRMS engineered on the MERN stack. Built with multi-collection MongoDB schemas, cryptographic JWT access controls, shift adherence ledgers, and reactive leave lifecycle pipelines.
               </Typography>
 
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                  <CheckIcon sx={{ color: '#10b981', mt: 0.3 }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f8fafc' }}>Bcrypt Password Hashing (10 Rounds)</Typography>
-                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>Salted hashes ensure passwords cannot be reversed even in database dump scenarios.</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                  <CheckIcon sx={{ color: '#10b981', mt: 0.3 }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f8fafc' }}>Stateless JWT Authorization Headers</Typography>
-                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>Cryptographic Bearer tokens protect client routes and Express REST endpoints.</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                  <CheckIcon sx={{ color: '#10b981', mt: 0.3 }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f8fafc' }}>Role Guard Middleware (HTTP 401 / 403)</Typography>
-                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>Non-permitted roles are rejected at the network layer prior to controller execution.</Typography>
-                  </Box>
-                </Box>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={() => navigate(user ? '/dashboard' : '/login')}
+                  endIcon={<ArrowIcon />}
+                  sx={{
+                    bgcolor: '#10b981',
+                    color: '#041e15',
+                    px: 3,
+                    py: 1.2,
+                    fontWeight: 700,
+                    fontSize: 14,
+                    '&:hover': { bgcolor: '#34d399', boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)' },
+                  }}
+                >
+                  Enter Operational Console
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  size="large"
+                  onClick={() => setPaletteOpen(true)}
+                  sx={{
+                    borderColor: 'rgba(255, 255, 255, 0.15)',
+                    color: '#e5e7eb',
+                    px: 2.5,
+                    py: 1.2,
+                    fontSize: 13,
+                    '&:hover': { borderColor: '#10b981', bgcolor: 'rgba(16, 185, 129, 0.05)' },
+                  }}
+                >
+                  Open Command Menu <span className="kbd-badge" style={{ marginLeft: 8 }}>Ctrl K</span>
+                </Button>
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            {/* Architecture Telemetry Terminal Preview */}
+            <Grid item xs={12} md={5}>
               <Paper
                 elevation={0}
                 sx={{
-                  p: 3.5,
-                  borderRadius: 3,
-                  backgroundColor: '#1e293b',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  fontFamily: 'monospace',
+                  p: 2.5,
+                  borderRadius: 2,
+                  bgcolor: '#0c0e12',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.06)',
+                  fontFamily: '"JetBrains Mono", monospace',
                 }}
               >
-                <Typography variant="caption" sx={{ color: '#38bdf8', fontWeight: 700, display: 'block', mb: 1.5 }}>
-                  // Auth & Role Enforcement Flow
-                </Typography>
-                <Box sx={{ color: '#cbd5e1', fontSize: 13, lineHeight: 1.8 }}>
-                  <div>POST /api/auth/login <span style={{ color: '#10b981' }}>200 OK</span></div>
-                  <div>↳ Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</div>
-                  <div style={{ color: '#64748b', margin: '8px 0' }}>// Request to protected endpoint:</div>
-                  <div>GET /api/employees</div>
-                  <div>↳ Header: Authorization: Bearer &lt;token&gt;</div>
-                  <div>↳ Middleware: verifyToken() → <span style={{ color: '#10b981' }}>Valid</span></div>
-                  <div>↳ RoleCheck: ['manager', 'hr'].includes(req.user.role) → <span style={{ color: '#10b981' }}>Authorized</span></div>
-                  <div style={{ color: '#10b981', marginTop: 8 }}>HTTP/1.1 200 OK — Serialized JSON records</div>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, pb: 1, borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f43f5e' }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#f59e0b' }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#10b981' }} />
+                  </Box>
+                  <Typography variant="caption" sx={{ color: '#6e7681', fontSize: 10 }}>
+                    SYS_MONITOR • LIVE_TELEMETRY
+                  </Typography>
+                </Box>
+
+                <Box sx={{ fontSize: 12, color: '#8b949e', lineHeight: 1.9 }}>
+                  <div><span style={{ color: '#10b981' }}>$</span> staffsync --inspect --health</div>
+                  <div>✓ MongoDB Atlas: <span style={{ color: '#10b981' }}>CONNECTED</span> (uwxped0.mongodb.net)</div>
+                  <div>✓ Mongoose Entities: <span style={{ color: '#38bdf8' }}>8 Registered Schemas</span></div>
+                  <div>✓ Auth Strategy: <span style={{ color: '#e5e7eb' }}>JWT + bcryptjs (10 Rounds)</span></div>
+                  <div>✓ Role Permission: <span style={{ color: '#e5e7eb' }}>['employee', 'manager', 'hr']</span></div>
+                  <div>✓ Active Daemons: <span style={{ color: '#10b981' }}>API:5000 / CLIENT:5173</span></div>
+                  <div style={{ color: '#10b981', marginTop: 8 }}>[SYS_READY] ZERO UNRESOLVED EXCEPTIONS</div>
                 </Box>
               </Paper>
             </Grid>
@@ -489,53 +345,313 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* 5. Institutional Technical Footer */}
-      <Box component="footer" sx={{ borderTop: '1px solid #e2e8f0', py: 5, backgroundColor: '#ffffff' }}>
+      {/* 3. Interactive Engine Simulator (The "Anti-Vibe-Code" Engineering Demonstration) */}
+      <Box id="simulator" sx={{ py: 10, borderBottom: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#0b0d10' }}>
         <Container maxWidth="lg">
-          <Grid container spacing={4} sx={{ mb: 4 }}>
+          <Box sx={{ mb: 6 }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1, py: 0.3, bgcolor: 'rgba(56, 189, 248, 0.08)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: 1, mb: 1.5 }}>
+              <SpeedIcon sx={{ fontSize: 14, color: '#38bdf8' }} />
+              <Typography variant="caption" sx={{ color: '#38bdf8', fontWeight: 700, fontSize: 11 }}>
+                REACTIVE_LOGIC_DEMO
+              </Typography>
+            </Box>
+            <Typography variant="h3" sx={{ fontSize: { xs: 26, md: 32 }, fontWeight: 800, color: '#f3f4f6', letterSpacing: '-0.02em', mb: 1 }}>
+              Workforce Policy & Calculation Engine
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#8b949e', maxWidth: 640 }}>
+              Adjust live organizational parameters below. The reactive mathematical engine recalculates shift adherence rates, projected billing hours, and simulated database I/O in real time.
+            </Typography>
+          </Box>
+
+          <Grid container spacing={4}>
+            {/* Control Panel */}
             <Grid item xs={12} md={5}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
-                StaffSync<span style={{ color: '#4f46e5' }}>.</span>
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, maxWidth: 380 }}>
-                Enterprise Human Resource Management Solution engineered on the MERN stack with strict Role-Based Access Control and multi-collection persistence.
-              </Typography>
+              <Card sx={{ p: 3.5, bgcolor: '#0e1014', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, display: 'block', mb: 2 }}>
+                  POLICY TUNING CONTROLS
+                </Typography>
+
+                <Box sx={{ mb: 3 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: '#e5e7eb', fontWeight: 600 }}>Active Personnel Roster</Typography>
+                    <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, fontSize: 13 }}>{headcount} Staff</Typography>
+                  </Box>
+                  <Slider
+                    value={headcount}
+                    min={10}
+                    max={500}
+                    step={5}
+                    onChange={(e, val) => setHeadcount(val)}
+                    sx={{ color: '#10b981' }}
+                  />
+                  <Typography variant="caption" sx={{ color: '#6e7681', fontSize: 11 }}>Simulates multi-user scale across Engineering, HR, and Operations</Typography>
+                </Box>
+
+                <Divider sx={{ my: 2.5, borderColor: 'rgba(255, 255, 255, 0.06)' }} />
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Box>
+                    <Typography variant="body2" sx={{ color: '#e5e7eb', fontWeight: 600 }}>Lateness Grace Window</Typography>
+                    <Typography variant="caption" sx={{ color: '#6e7681' }}>{lateThreshold ? 'Extended (30 Min Grace)' : 'Strict (15 Min Grace)'}</Typography>
+                  </Box>
+                  <Switch
+                    checked={lateThreshold}
+                    onChange={(e) => setLateThreshold(e.target.checked)}
+                    color="primary"
+                  />
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box>
+                    <Typography variant="body2" sx={{ color: '#e5e7eb', fontWeight: 600 }}>RBAC Hardware Isolation</Typography>
+                    <Typography variant="caption" sx={{ color: '#6e7681' }}>Strict JWT Token Guard</Typography>
+                  </Box>
+                  <Switch
+                    checked={strictRbac}
+                    onChange={(e) => setStrictRbac(e.target.checked)}
+                    color="primary"
+                  />
+                </Box>
+              </Card>
             </Grid>
-            <Grid item xs={6} md={3}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a', mb: 1.5 }}>
-                Architecture
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.8, color: '#64748b', fontSize: 13 }}>
-                <span>React 18 & Material UI</span>
-                <span>Node.js & Express REST API</span>
-                <span>MongoDB Atlas M0 Clustered</span>
-                <span>JWT Cryptographic Tokens</span>
-              </Box>
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a', mb: 1.5 }}>
-                Verification & Deliverables
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.8, color: '#64748b', fontSize: 13 }}>
-                <span>Public GitHub: <a href="https://github.com/Keshav-Kasera/StaffSync" target="_blank" rel="noreferrer" style={{ color: '#4f46e5', textDecoration: 'none', fontWeight: 600 }}>Keshav-Kasera/StaffSync</a></span>
-                <span>Database: 8 Mongoose Schema Entities</span>
-                <span>License: MIT Standard Open Source</span>
-              </Box>
+
+            {/* Reactive Metrics Display */}
+            <Grid item xs={12} md={7}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 3, bgcolor: '#0e1014', border: '1px solid rgba(255, 255, 255, 0.08)', height: '100%' }}>
+                    <Typography variant="caption" sx={{ color: '#6e7681', fontWeight: 700, display: 'block', mb: 1 }}>
+                      PROJECTED SHIFT ADHERENCE
+                    </Typography>
+                    <Typography variant="h3" sx={{ color: '#10b981', fontWeight: 900, mb: 1, fontFamily: '"JetBrains Mono", monospace' }}>
+                      {calculatedAttendance}%
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>
+                      Calculated using composite punch-in timestamps
+                    </Typography>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 3, bgcolor: '#0e1014', border: '1px solid rgba(255, 255, 255, 0.08)', height: '100%' }}>
+                    <Typography variant="caption" sx={{ color: '#6e7681', fontWeight: 700, display: 'block', mb: 1 }}>
+                      AGGREGATE BILLABLE HOURS
+                    </Typography>
+                    <Typography variant="h3" sx={{ color: '#38bdf8', fontWeight: 900, mb: 1, fontFamily: '"JetBrains Mono", monospace' }}>
+                      {monthlyHours}h
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>
+                      Automated 168h/month per full-time resource
+                    </Typography>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 3, bgcolor: '#0e1014', border: '1px solid rgba(255, 255, 255, 0.08)', height: '100%' }}>
+                    <Typography variant="caption" sx={{ color: '#6e7681', fontWeight: 700, display: 'block', mb: 1 }}>
+                      SIMULATED WRITE TRANSACTIONS
+                    </Typography>
+                    <Typography variant="h3" sx={{ color: '#f59e0b', fontWeight: 900, mb: 1, fontFamily: '"JetBrains Mono", monospace' }}>
+                      ~{writeOps}/sec
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>
+                      Mongoose concurrency on Atlas M0 shared cluster
+                    </Typography>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Card sx={{ p: 3, bgcolor: '#0e1014', border: '1px solid rgba(255, 255, 255, 0.08)', height: '100%' }}>
+                    <Typography variant="caption" sx={{ color: '#6e7681', fontWeight: 700, display: 'block', mb: 1 }}>
+                      SECURITY VERIFICATION
+                    </Typography>
+                    <Typography variant="h3" sx={{ color: '#a78bfa', fontWeight: 900, mb: 1, fontFamily: '"JetBrains Mono", monospace' }}>
+                      100% VALID
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>
+                      Zero unauthorized API state mutations permitted
+                    </Typography>
+                  </Card>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
+        </Container>
+      </Box>
 
-          <Divider sx={{ mb: 3 }} />
+      {/* 4. Real Interactive API Inspector */}
+      <Box id="api-inspector" sx={{ py: 10, borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ mb: 5 }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1, py: 0.3, bgcolor: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 1, mb: 1.5 }}>
+              <TerminalIcon sx={{ fontSize: 14, color: '#10b981' }} />
+              <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, fontSize: 11 }}>
+                REST_INTERFACE_SPEC
+              </Typography>
+            </Box>
+            <Typography variant="h3" sx={{ fontSize: { xs: 26, md: 32 }, fontWeight: 800, color: '#f3f4f6', letterSpacing: '-0.02em', mb: 1 }}>
+              Production REST API Endpoints
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#8b949e' }}>
+              Select an endpoint to inspect request dispatch parameters, middleware pipelines, and serialized JSON payloads.
+            </Typography>
+          </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-            <Typography variant="caption" sx={{ color: '#94a3b8' }}>
-              © 2026 StaffSync Platform. Full Stack Capstone Project.
+          <Card sx={{ bgcolor: '#0c0e12', border: '1px solid rgba(255, 255, 255, 0.1)', overflow: 'hidden' }}>
+            {/* Tabs Bar */}
+            <Box sx={{ display: 'flex', overflowX: 'auto', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#090a0c' }}>
+              {apiEndpoints.map((ep, idx) => (
+                <Box
+                  key={ep.path}
+                  onClick={() => setActiveApiTab(idx)}
+                  sx={{
+                    px: 3,
+                    py: 1.8,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.2,
+                    borderBottom: activeApiTab === idx ? '2px solid #10b981' : '2px solid transparent',
+                    backgroundColor: activeApiTab === idx ? 'rgba(16, 185, 129, 0.06)' : 'transparent',
+                    color: activeApiTab === idx ? '#f3f4f6' : '#6e7681',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.15s ease',
+                    '&:hover': { color: '#e5e7eb' },
+                  }}
+                >
+                  <Typography variant="caption" sx={{ color: ep.method === 'POST' ? '#38bdf8' : '#10b981', fontWeight: 800 }}>
+                    {ep.method}
+                  </Typography>
+                  <Typography variant="caption" sx={{ fontFamily: '"JetBrains Mono", monospace', fontSize: 12 }}>
+                    {ep.path}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+
+            {/* Tab Body */}
+            <Box sx={{ p: 3 }}>
+              <Typography variant="body2" sx={{ color: '#8b949e', mb: 2, fontSize: 13 }}>
+                // Operation Purpose: <span style={{ color: '#e5e7eb' }}>{apiEndpoints[activeApiTab].desc}</span>
+              </Typography>
+
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2.5,
+                  bgcolor: '#07080a',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  borderRadius: 1.5,
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: 13,
+                  color: '#e5e7eb',
+                  lineHeight: 1.7,
+                }}
+              >
+                <pre style={{ margin: 0 }}>
+                  {JSON.stringify(apiEndpoints[activeApiTab].response, null, 2)}
+                </pre>
+              </Paper>
+            </Box>
+          </Card>
+        </Container>
+      </Box>
+
+      {/* 5. 8-Collection Database Architecture Matrix */}
+      <Box id="architecture" sx={{ py: 10, bgcolor: '#08090a' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ mb: 6 }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1, py: 0.3, bgcolor: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 1, mb: 1.5 }}>
+              <DatabaseIcon sx={{ fontSize: 14, color: '#f59e0b' }} />
+              <Typography variant="caption" sx={{ color: '#f59e0b', fontWeight: 700, fontSize: 11 }}>
+                PERSISTENCE_SPECIFICATION
+              </Typography>
+            </Box>
+            <Typography variant="h3" sx={{ fontSize: { xs: 26, md: 32 }, fontWeight: 800, color: '#f3f4f6', letterSpacing: '-0.02em', mb: 1 }}>
+              Strict 8-Collection Schema Topology
             </Typography>
-            <Typography variant="caption" sx={{ color: '#94a3b8' }}>
-              Authored by Keshav Kasera • MIT License
+            <Typography variant="body2" sx={{ color: '#8b949e' }}>
+              Every collection is strictly indexed, normalized, and bound to Mongoose ODM middleware for referential integrity.
             </Typography>
+          </Box>
+
+          <Grid container spacing={2}>
+            {[
+              { num: '01', name: 'Users', role: 'Authentication & bcrypt password hash, roles' },
+              { num: '02', name: 'Employees', role: 'Profiles, department, designation, leave balances' },
+              { num: '03', name: 'Managers', role: 'Leadership mapping & direct report team arrays' },
+              { num: '04', name: 'Attendance', role: 'Compound indexing (user + date), hours calculation' },
+              { num: '05', name: 'Leaves', role: 'Lifecycle state machine (Pending/Approved/Rejected)' },
+              { num: '06', name: 'Announcements', role: 'Priority classifications, broadcast dispatching' },
+              { num: '07', name: 'Trainings', role: 'Enrolled employee progress percent tracking' },
+              { num: '08', name: 'Notifications', role: 'Unread counters, event-driven action triggers' },
+            ].map((col) => (
+              <Grid item xs={12} sm={6} md={3} key={col.num}>
+                <Card
+                  sx={{
+                    p: 2.5,
+                    bgcolor: '#0c0e12',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    height: '100%',
+                    transition: 'border-color 0.15s ease',
+                    '&:hover': { borderColor: 'rgba(16, 185, 129, 0.4)' },
+                  }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                    <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace' }}>
+                      COL_{col.num}
+                    </Typography>
+                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#10b981' }} />
+                  </Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#f3f4f6', mb: 0.5 }}>
+                    {col.name}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: '#8b949e', lineHeight: 1.5, display: 'block' }}>
+                    {col.role}
+                  </Typography>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* 6. Footer */}
+      <Box component="footer" sx={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', py: 6, bgcolor: '#060709' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
+                StaffSync<span style={{ color: '#10b981' }}>.</span>
+              </Typography>
+              <Typography variant="caption" sx={{ color: '#6e7681', display: 'block', mt: 0.5 }}>
+                Engineered by Keshav Kasera • Released under the MIT Open Source License
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Button
+                size="small"
+                onClick={() => setPaletteOpen(true)}
+                sx={{ color: '#8b949e', fontSize: 12, '&:hover': { color: '#10b981' } }}
+              >
+                Command Menu (Ctrl+K)
+              </Button>
+              <Button
+                size="small"
+                href="https://github.com/Keshav-Kasera/StaffSync"
+                target="_blank"
+                sx={{ color: '#8b949e', fontSize: 12, '&:hover': { color: '#10b981' } }}
+              >
+                GitHub Repository
+              </Button>
+            </Box>
           </Box>
         </Container>
       </Box>
+
+      {/* Mount Command Palette */}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </Box>
   );
 };

@@ -27,9 +27,11 @@ import {
   CheckCircle as PresentIcon,
   Warning as LateIcon,
   History as HistoryIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import axiosClient from '../api/axiosClient';
+import { exportToCsv } from '../utils/exportCsv';
 
 const Attendance = () => {
   const { user } = useAuth();
@@ -159,6 +161,45 @@ const Attendance = () => {
     }
   };
 
+  const handleExportMyHistory = () => {
+    const headers = ['Date', 'Clock In', 'Clock Out', 'Total Hours', 'Status'];
+    const rows = myHistory.map((r) => [
+      r.date,
+      new Date(r.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      r.clockOut ? new Date(r.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active',
+      r.totalHours || 0,
+      r.status,
+    ]);
+    exportToCsv('My_Attendance_Records', headers, rows);
+  };
+
+  const handleExportTeam = () => {
+    const headers = ['Employee', 'Department', 'Date', 'Clock In', 'Clock Out', 'Status'];
+    const rows = teamRecords.map((r) => [
+      r.user?.name || '',
+      r.employee?.department || '',
+      r.date,
+      new Date(r.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      r.clockOut ? new Date(r.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active',
+      r.status,
+    ]);
+    exportToCsv('Team_Attendance_Ledger', headers, rows);
+  };
+
+  const handleExportAll = () => {
+    const headers = ['Employee', 'Department', 'Date', 'Clock In', 'Clock Out', 'Hours', 'Status'];
+    const rows = allRecords.map((r) => [
+      r.user?.name || '',
+      r.employee?.department || '',
+      r.date,
+      new Date(r.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      r.clockOut ? new Date(r.clockOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active',
+      r.totalHours || 0,
+      r.status,
+    ]);
+    exportToCsv('Company_Wide_Attendance_Audit', headers, rows);
+  };
+
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
@@ -251,9 +292,20 @@ const Attendance = () => {
       {/* Tab 0: My Log */}
       {tabIndex === 0 && (
         <Card sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            My Monthly Attendance Records
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              My Monthly Attendance Records
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
+              onClick={handleExportMyHistory}
+              sx={{ borderColor: 'rgba(255, 255, 255, 0.15)', color: '#8b949e', fontSize: 12, '&:hover': { borderColor: '#10b981', color: '#10b981' } }}
+            >
+              Export CSV
+            </Button>
+          </Box>
           <TableContainer>
             <Table>
               <TableHead>
@@ -305,9 +357,20 @@ const Attendance = () => {
       {/* Tab 1: Team Log */}
       {tabIndex === 1 && (user?.role === 'manager' || user?.role === 'hr') && (
         <Card sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
-            Team Member Attendance Records
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Team Member Attendance Records
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
+              onClick={handleExportTeam}
+              sx={{ borderColor: 'rgba(255, 255, 255, 0.15)', color: '#8b949e', fontSize: 12, '&:hover': { borderColor: '#10b981', color: '#10b981' } }}
+            >
+              Export CSV
+            </Button>
+          </Box>
           <TableContainer>
             <Table>
               <TableHead>
@@ -352,22 +415,33 @@ const Attendance = () => {
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               Organization-Wide Attendance Log
             </Typography>
-            <TextField
-              select
-              size="small"
-              label="Filter by Status"
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                fetchAllAttendance(1, e.target.value);
-              }}
-              sx={{ width: 180 }}
-            >
-              <MenuItem value="">All Statuses</MenuItem>
-              <MenuItem value="Present">Present</MenuItem>
-              <MenuItem value="Late">Late</MenuItem>
-              <MenuItem value="Half-day">Half-day</MenuItem>
-            </TextField>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
+                onClick={handleExportAll}
+                sx={{ borderColor: 'rgba(255, 255, 255, 0.15)', color: '#8b949e', fontSize: 12, '&:hover': { borderColor: '#10b981', color: '#10b981' } }}
+              >
+                Export CSV
+              </Button>
+              <TextField
+                select
+                size="small"
+                label="Filter by Status"
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  fetchAllAttendance(1, e.target.value);
+                }}
+                sx={{ width: 180 }}
+              >
+                <MenuItem value="">All Statuses</MenuItem>
+                <MenuItem value="Present">Present</MenuItem>
+                <MenuItem value="Late">Late</MenuItem>
+                <MenuItem value="Half-day">Half-day</MenuItem>
+              </TextField>
+            </Box>
           </Box>
           <TableContainer>
             <Table>
