@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -6,27 +6,29 @@ import {
   Button,
   Grid,
   Card,
-  CardContent,
   Chip,
-  Avatar,
-  Divider,
   Paper,
+  Divider,
+  Tab,
+  Tabs,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@mui/material';
 import {
-  Speed as SpeedIcon,
   Security as SecurityIcon,
-  People as PeopleIcon,
-  EventNote as LeavesIcon,
+  People as DirectoryIcon,
   AccessTime as AttendanceIcon,
-  School as TrainingIcon,
+  DateRange as LeaveIcon,
   ArrowForward as ArrowForwardIcon,
-  CheckCircle as CheckIcon,
+  Check as CheckIcon,
   GitHub as GitHubIcon,
-  SupervisorAccount as ManagerIcon,
-  AdminPanelSettings as HRIcon,
-  TrendingUp as TrendingUpIcon,
-  NotificationsActive as AlertIcon,
-  Star as StarIcon,
+  Business as EnterpriseIcon,
+  Analytics as AnalyticsIcon,
+  Lock as LockIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -34,10 +36,11 @@ import { useAuth } from '../context/AuthContext';
 const Home = () => {
   const navigate = useNavigate();
   const { user, login } = useAuth();
+  const [activeTab, setActiveTab] = useState(0);
 
-  const handleQuickDemoLogin = async (demoEmail) => {
+  const handleQuickLogin = async (email) => {
     try {
-      await login(demoEmail, 'Password123!');
+      await login(email, 'Password123!');
       navigate('/dashboard');
     } catch (err) {
       navigate('/login');
@@ -45,82 +48,100 @@ const Home = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a' }}>
-      {/* 1. Top Navbar */}
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#ffffff', color: '#0f172a' }}>
+      {/* 1. Executive Top Navigation Bar */}
       <Box
+        component="header"
         sx={{
           position: 'sticky',
           top: 0,
-          zIndex: 100,
+          zIndex: 1000,
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(8px)',
+          backdropFilter: 'blur(12px)',
           borderBottom: '1px solid #e2e8f0',
-          py: 1.8,
         }}
       >
-        <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box
-            sx={{ display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer' }}
-            onClick={() => navigate('/')}
-          >
+        <Container maxWidth="lg" sx={{ py: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: 2.5,
-                background: 'linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                fontWeight: 900,
-                fontSize: 20,
-                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)',
-              }}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
+              onClick={() => navigate('/')}
             >
-              S
+              <Box
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 1.5,
+                  backgroundColor: '#0f172a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: 16,
+                  letterSpacing: -0.5,
+                }}
+              >
+                S
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.03em', fontSize: 19 }}>
+                StaffSync<span style={{ color: '#4f46e5' }}>.</span>
+              </Typography>
             </Box>
-            <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
-              Staff<span style={{ color: '#4f46e5' }}>Sync</span>
-            </Typography>
+
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2.5 }}>
+              <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', '&:hover': { color: '#0f172a' } }} onClick={() => document.getElementById('modules')?.scrollIntoView({ behavior: 'smooth' })}>
+                Modules
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', '&:hover': { color: '#0f172a' } }} onClick={() => document.getElementById('architecture')?.scrollIntoView({ behavior: 'smooth' })}>
+                Architecture
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', '&:hover': { color: '#0f172a' } }} onClick={() => document.getElementById('security')?.scrollIntoView({ behavior: 'smooth' })}>
+                Security & RBAC
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 600, cursor: 'pointer', '&:hover': { color: '#0f172a' } }} onClick={() => document.getElementById('sandbox')?.scrollIntoView({ behavior: 'smooth' })}>
+                Evaluation Sandbox
+              </Typography>
+            </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Button
+              size="small"
               color="inherit"
-              startIcon={<GitHubIcon />}
+              startIcon={<GitHubIcon sx={{ fontSize: 18 }} />}
               href="https://github.com/Keshav-Kasera/StaffSync"
               target="_blank"
-              sx={{ display: { xs: 'none', sm: 'inline-flex' }, fontWeight: 600 }}
+              sx={{ fontWeight: 600, color: '#475569', textTransform: 'none', display: { xs: 'none', sm: 'inline-flex' } }}
             >
-              GitHub Repo
+              Repository
             </Button>
-
             {user ? (
               <Button
                 variant="contained"
-                color="primary"
-                endIcon={<ArrowForwardIcon />}
+                size="small"
                 onClick={() => navigate('/dashboard')}
-                sx={{ px: 3, borderRadius: 2 }}
+                sx={{ backgroundColor: '#0f172a', '&:hover': { backgroundColor: '#1e293b' }, textTransform: 'none', fontWeight: 600, px: 2 }}
               >
-                Go to Dashboard
+                Workspace Dashboard
               </Button>
             ) : (
               <>
                 <Button
-                  variant="outlined"
+                  size="small"
+                  variant="text"
                   onClick={() => navigate('/login')}
-                  sx={{ px: 2.5, borderRadius: 2, fontWeight: 700 }}
+                  sx={{ color: '#0f172a', fontWeight: 600, textTransform: 'none', px: 1.5 }}
                 >
                   Sign In
                 </Button>
                 <Button
+                  size="small"
                   variant="contained"
                   onClick={() => navigate('/register')}
-                  sx={{ px: 2.5, borderRadius: 2, fontWeight: 700 }}
+                  sx={{ backgroundColor: '#4f46e5', '&:hover': { backgroundColor: '#4338ca' }, textTransform: 'none', fontWeight: 600, px: 2 }}
                 >
-                  Register
+                  Create Account
                 </Button>
               </>
             )}
@@ -128,548 +149,479 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* 2. Hero Section */}
-      <Box
-        sx={{
-          pt: { xs: 8, md: 12 },
-          pb: { xs: 8, md: 10 },
-          background: 'radial-gradient(ellipse at top, #eef2ff 0%, #f8fafc 70%)',
-          textAlign: 'center',
-        }}
-      >
-        <Container maxWidth="md">
-          <Chip
-            icon={<SecurityIcon sx={{ fontSize: 16 }} />}
-            label="ENTERPRISE MERN STACK HUMAN RESOURCE MANAGEMENT SYSTEM"
-            color="primary"
-            variant="outlined"
-            sx={{
-              fontWeight: 800,
-              fontSize: 12,
-              mb: 3,
-              letterSpacing: 0.8,
-              py: 2,
-              px: 1,
-              borderColor: 'primary.light',
-              backgroundColor: 'rgba(79, 70, 229, 0.05)',
-            }}
-          />
+      {/* 2. Enterprise Hero Section */}
+      <Box sx={{ pt: { xs: 8, md: 10 }, pb: { xs: 6, md: 8 }, backgroundColor: '#fafafa', borderBottom: '1px solid #f1f5f9' }}>
+        <Container maxWidth="lg">
+          <Box sx={{ maxWidth: 780, mx: 'auto', textAlign: 'center', mb: 5 }}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1.5, py: 0.5, borderRadius: 5, backgroundColor: '#f1f5f9', border: '1px solid #e2e8f0', mb: 2.5 }}>
+              <Box sx={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#10b981' }} />
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#334155', letterSpacing: 0.5, textTransform: 'uppercase', fontSize: 11 }}>
+                Enterprise Workforce Infrastructure
+              </Typography>
+            </Box>
 
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 900,
-              fontSize: { xs: 32, sm: 46, md: 54 },
-              lineHeight: 1.15,
-              mb: 3,
-              color: '#0f172a',
-              letterSpacing: '-0.03em',
-            }}
-          >
-            Smarter Workforce Operations & Employee Governance
-          </Typography>
-
-          <Typography
-            variant="h6"
-            sx={{
-              color: '#475569',
-              mb: 4.5,
-              fontWeight: 400,
-              lineHeight: 1.7,
-              fontSize: { xs: 16, sm: 18 },
-              maxWidth: 720,
-              mx: 'auto',
-            }}
-          >
-            A high-performance portal unifying <strong>Employees</strong>, <strong>Department Managers</strong>, and <strong>HR Leadership</strong>. 
-            Automate daily attendance, govern time-off approvals, track performance ratings, and broadcast corporate notices with complete Role-Based Security.
-          </Typography>
-
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap', mb: 6 }}>
-            <Button
-              variant="contained"
-              size="large"
-              endIcon={<ArrowForwardIcon />}
-              onClick={() => navigate(user ? '/dashboard' : '/login')}
+            <Typography
+              variant="h1"
               sx={{
-                py: 1.6,
-                px: 4,
-                fontSize: 16,
-                fontWeight: 700,
-                borderRadius: 2.5,
-                background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
-                boxShadow: '0 8px 24px rgba(79, 70, 229, 0.35)',
+                fontWeight: 800,
+                fontSize: { xs: 34, sm: 46, md: 52 },
+                lineHeight: 1.15,
+                color: '#0f172a',
+                letterSpacing: '-0.03em',
+                mb: 2.5,
               }}
             >
-              {user ? 'Open Workspace' : 'Launch Demo Portal'}
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              startIcon={<GitHubIcon />}
-              href="https://github.com/Keshav-Kasera/StaffSync"
-              target="_blank"
+              Unified Workforce Operations & Governance Platform
+            </Typography>
+
+            <Typography
+              variant="body1"
               sx={{
-                py: 1.6,
-                px: 3.5,
-                fontSize: 15,
-                fontWeight: 700,
-                borderRadius: 2.5,
-                borderColor: '#cbd5e1',
-                color: '#334155',
-                '&:hover': { borderColor: '#94a3b8', backgroundColor: '#f1f5f9' },
+                fontSize: { xs: 16, sm: 18 },
+                color: '#64748b',
+                lineHeight: 1.7,
+                maxWidth: 680,
+                mx: 'auto',
+                mb: 4,
               }}
             >
-              Browse Code
-            </Button>
+              StaffSync delivers institutional-grade oversight across personnel directories, daily attendance verification, and multi-tier leave approval lifecycles through strict Role-Based Access Control.
+            </Typography>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+              <Button
+                variant="contained"
+                size="large"
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => navigate(user ? '/dashboard' : '/login')}
+                sx={{
+                  backgroundColor: '#0f172a',
+                  color: '#ffffff',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  px: 3.5,
+                  py: 1.3,
+                  borderRadius: 2,
+                  '&:hover': { backgroundColor: '#1e293b' },
+                }}
+              >
+                {user ? 'Open Workspace' : 'Launch System Portal'}
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<GitHubIcon />}
+                href="https://github.com/Keshav-Kasera/StaffSync"
+                target="_blank"
+                sx={{
+                  color: '#0f172a',
+                  borderColor: '#cbd5e1',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  px: 3,
+                  py: 1.3,
+                  borderRadius: 2,
+                  '&:hover': { borderColor: '#94a3b8', backgroundColor: '#ffffff' },
+                }}
+              >
+                Source Code
+              </Button>
+            </Box>
           </Box>
 
-          {/* Key Metric Highlights Bar */}
+          {/* Interactive Live Product Mockup Preview */}
           <Paper
             elevation={0}
             sx={{
-              p: 3,
+              mt: 6,
               borderRadius: 3,
               border: '1px solid #e2e8f0',
+              overflow: 'hidden',
               backgroundColor: '#ffffff',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.04)',
+              boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.08)',
             }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={6} sm={3}>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: 'primary.main' }}>
-                  3 Tiers
+            {/* Mock Window Header */}
+            <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#f59e0b' }} />
+                <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#10b981' }} />
+                <Typography variant="caption" sx={{ color: '#64748b', ml: 1.5, fontWeight: 600, fontFamily: 'monospace' }}>
+                  https://staffsync.internal/dashboard/overview
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                  Role-Based Access
-                </Typography>
+              </Box>
+              <Chip label="System Active • v1.0.0" size="small" sx={{ fontSize: 11, height: 22, fontWeight: 600, color: '#059669', bgcolor: '#ecfdf5' }} />
+            </Box>
+
+            {/* Mock Dashboard Body */}
+            <Box sx={{ p: { xs: 2.5, md: 4 } }}>
+              <Grid container spacing={2.5} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Box sx={{ p: 2, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Active Headcount</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>1,248 Staff</Typography>
+                    <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 600 }}>+4.2% this quarter</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Box sx={{ p: 2, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Today's Presence</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>98.4% Verified</Typography>
+                    <Typography variant="caption" sx={{ color: '#64748b' }}>Shift adherence on target</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Box sx={{ p: 2, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Pending Governance</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>12 Approvals</Typography>
+                    <Typography variant="caption" sx={{ color: '#f59e0b', fontWeight: 600 }}>Awaiting manager action</Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Box sx={{ p: 2, borderRadius: 2, border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5 }}>Security Posture</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, color: '#0f172a' }}>RBAC Enforced</Typography>
+                    <Typography variant="caption" sx={{ color: '#4f46e5', fontWeight: 600 }}>Zero authorization bypasses</Typography>
+                  </Box>
+                </Grid>
               </Grid>
-              <Grid item xs={6} sm={3}>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: 'secondary.main' }}>
-                  8 Models
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                  MongoDB Collections
-                </Typography>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: 'success.main' }}>
-                  100% Free
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                  Atlas & Cloud Hosted
-                </Typography>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: 'warning.main' }}>
-                  JWT & Bcrypt
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                  Enterprise Security
-                </Typography>
-              </Grid>
-            </Grid>
+
+              {/* Mock Table */}
+              <Box sx={{ border: '1px solid #e2e8f0', borderRadius: 2, overflow: 'hidden' }}>
+                <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a' }}>
+                    Live Transaction Pipeline (Simulated Feed)
+                  </Typography>
+                </Box>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: '#ffffff' }}>
+                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Personnel</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Department</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Workflow Type</TableCell>
+                      <TableCell sx={{ fontWeight: 700, color: '#64748b', fontSize: 12 }}>Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>Alex Rivera (Senior Engineer)</TableCell>
+                      <TableCell>Engineering</TableCell>
+                      <TableCell>Time-Off Request (Casual — 3 Days)</TableCell>
+                      <TableCell><Chip label="Pending Review" size="small" sx={{ fontSize: 11, height: 20, bgcolor: '#fef3c7', color: '#92400e', fontWeight: 700 }} /></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>Sarah Chen (Staff Architect)</TableCell>
+                      <TableCell>Engineering</TableCell>
+                      <TableCell>Daily Attendance Check-In</TableCell>
+                      <TableCell><Chip label="Verified Present" size="small" sx={{ fontSize: 11, height: 20, bgcolor: '#ecfdf5', color: '#065f46', fontWeight: 700 }} /></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>Marcus Brody (Engineering Lead)</TableCell>
+                      <TableCell>Engineering</TableCell>
+                      <TableCell>Quarterly Performance Appraisal</TableCell>
+                      <TableCell><Chip label="Evaluated (5 Stars)" size="small" sx={{ fontSize: 11, height: 20, bgcolor: '#eff6ff', color: '#1e40af', fontWeight: 700 }} /></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+            </Box>
           </Paper>
         </Container>
       </Box>
 
-      {/* 3. Three Persona Portals Breakdown */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Chip label="ROLE-BASED WORKFLOWS" size="small" color="primary" sx={{ fontWeight: 800, mb: 1.5 }} />
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
-            Built Specifically for Every Tier of the Company
+      {/* 3. Core Enterprise Architecture Modules */}
+      <Container maxWidth="lg" sx={{ py: 10 }} id="modules">
+        <Box sx={{ textAlign: 'center', mb: 7 }}>
+          <Typography variant="overline" sx={{ fontWeight: 800, color: '#4f46e5', letterSpacing: 1.5 }}>
+            FUNCTIONAL ARCHITECTURE
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 640, mx: 'auto', mt: 1 }}>
-            StaffSync does not use a one-size-fits-all screen. Each user persona gets a dedicated dashboard tailored strictly to their responsibilities.
+          <Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', mt: 0.5, mb: 1.5 }}>
+            Purpose-Built for Strict Organizational Hierarchy
           </Typography>
-        </Box>
-
-        <Grid container spacing={4}>
-          {/* HR Persona */}
-          <Grid item xs={12} md={4}>
-            <Card
-              sx={{
-                p: 3.5,
-                height: '100%',
-                borderRadius: 4,
-                border: '1px solid #e2e8f0',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
-                },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2.5 }}>
-                <Box
-                  sx={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 3,
-                    bgcolor: 'rgba(79, 70, 229, 0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'primary.main',
-                  }}
-                >
-                  <HRIcon sx={{ fontSize: 30 }} />
-                </Box>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                    HR Personnel
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700 }}>
-                    Executive Administrative Suite
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.7 }}>
-                Full operational control over the organization. Onboard staff, manage department allocations, publish broadcasts, and audit attendance metrics.
-              </Typography>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.2, mb: 3, flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Employee Directory CRUD & Status</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Organization Attendance Auditing</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Company-Wide Leave Decisions</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Corporate Bulletins & Urgent Alerts</Typography>
-                </Box>
-              </Box>
-
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                onClick={() => handleQuickDemoLogin('hr@staffsync.com')}
-                sx={{ borderRadius: 2, fontWeight: 700 }}
-              >
-                Test HR View Demo →
-              </Button>
-            </Card>
-          </Grid>
-
-          {/* Manager Persona */}
-          <Grid item xs={12} md={4}>
-            <Card
-              sx={{
-                p: 3.5,
-                height: '100%',
-                borderRadius: 4,
-                border: '1px solid #e2e8f0',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
-                },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2.5 }}>
-                <Box
-                  sx={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 3,
-                    bgcolor: 'rgba(6, 182, 212, 0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'secondary.main',
-                  }}
-                >
-                  <ManagerIcon sx={{ fontSize: 30 }} />
-                </Box>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                    Managers
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: 'secondary.main', fontWeight: 700 }}>
-                    Department Supervision
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.7 }}>
-                Empowers team leads to manage direct reports without administrative friction. Monitor presence, process leave requests, and assess velocity.
-              </Typography>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.2, mb: 3, flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="secondary" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Direct Report Team Oversight</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="secondary" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Approve / Reject Team Leaves</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="secondary" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Live Team Attendance Clock-In Feed</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="secondary" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>1 to 5 Star Performance Evaluations</Typography>
-                </Box>
-              </Box>
-
-              <Button
-                variant="outlined"
-                color="secondary"
-                fullWidth
-                onClick={() => handleQuickDemoLogin('manager@staffsync.com')}
-                sx={{ borderRadius: 2, fontWeight: 700 }}
-              >
-                Test Manager View Demo →
-              </Button>
-            </Card>
-          </Grid>
-
-          {/* Employee Persona */}
-          <Grid item xs={12} md={4}>
-            <Card
-              sx={{
-                p: 3.5,
-                height: '100%',
-                borderRadius: 4,
-                border: '1px solid #e2e8f0',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
-                },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2.5 }}>
-                <Box
-                  sx={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 3,
-                    bgcolor: 'rgba(16, 185, 129, 0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'success.main',
-                  }}
-                >
-                  <PeopleIcon sx={{ fontSize: 30 }} />
-                </Box>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                    Employees
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 700 }}>
-                    Self-Service Workstation
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.7 }}>
-                Frictionless daily operations. Mark shifts with one click, submit time-off requests, track annual quotas, and progress through skill certifications.
-              </Typography>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.2, mb: 3, flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>One-Click Daily Clock-In / Out</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Casual, Sick & Earned Leave Quotas</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Training Milestone Progress Bar</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckIcon color="success" sx={{ fontSize: 18 }} />
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>Self-Service Profile Details</Typography>
-                </Box>
-              </Box>
-
-              <Button
-                variant="outlined"
-                color="success"
-                fullWidth
-                onClick={() => handleQuickDemoLogin('employee@staffsync.com')}
-                sx={{ borderRadius: 2, fontWeight: 700 }}
-              >
-                Test Employee View Demo →
-              </Button>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* 4. One-Click Evaluator Credentials Banner */}
-      <Box sx={{ py: 8, backgroundColor: '#ffffff', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
-        <Container maxWidth="lg">
-          <Card
-            sx={{
-              p: { xs: 3, md: 5 },
-              borderRadius: 4,
-              background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
-              color: '#ffffff',
-              boxShadow: '0 20px 40px rgba(30, 27, 75, 0.4)',
-            }}
-          >
-            <Grid container spacing={4} alignItems="center">
-              <Grid item xs={12} md={7}>
-                <Chip label="EVALUATOR QUICK ACCESS" size="small" sx={{ bgcolor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 800, mb: 2 }} />
-                <Typography variant="h4" sx={{ fontWeight: 900, mb: 1.5, color: '#ffffff' }}>
-                  Pre-Configured Demo Accounts
-                </Typography>
-                <Typography variant="body1" sx={{ color: '#cbd5e1', mb: 3, lineHeight: 1.7 }}>
-                  The database has been seeded with verified accounts across all 3 permission levels. 
-                  Click any account below to instantly authenticate and evaluate the system without manually typing credentials.
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleQuickDemoLogin('hr@staffsync.com')}
-                    sx={{ bgcolor: '#4f46e5', '&:hover': { bgcolor: '#4338ca' } }}
-                  >
-                    👔 Login as HR
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleQuickDemoLogin('manager@staffsync.com')}
-                    sx={{ bgcolor: '#0891b2', '&:hover': { bgcolor: '#0e7490' } }}
-                  >
-                    💼 Login as Manager
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleQuickDemoLogin('employee@staffsync.com')}
-                    sx={{ bgcolor: '#059669', '&:hover': { bgcolor: '#047857' } }}
-                  >
-                    💻 Login as Employee
-                  </Button>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} md={5}>
-                <Box
-                  sx={{
-                    p: 3,
-                    borderRadius: 3,
-                    bgcolor: 'rgba(255, 255, 255, 0.08)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    backdropFilter: 'blur(10px)',
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ color: '#94a3b8', fontWeight: 700, mb: 2 }}>
-                    MANUAL CREDENTIALS:
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#e2e8f0' }}>All Passwords:</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#38bdf8' }}>Password123!</Typography>
-                    </Box>
-                    <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#e2e8f0' }}>HR Email:</Typography>
-                      <Typography variant="caption" sx={{ color: '#e2e8f0' }}>hr@staffsync.com</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#e2e8f0' }}>Manager Email:</Typography>
-                      <Typography variant="caption" sx={{ color: '#e2e8f0' }}>manager@staffsync.com</Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#e2e8f0' }}>Employee Email:</Typography>
-                      <Typography variant="caption" sx={{ color: '#e2e8f0' }}>employee@staffsync.com</Typography>
-                    </Box>
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-          </Card>
-        </Container>
-      </Box>
-
-      {/* 5. Technology Stack Summary */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
-            Built with Modern, Industry-Standard Technologies
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            Engineered to deliver reliability, scalability, and airtight data isolation.
+          <Typography variant="body1" sx={{ color: '#64748b', maxWidth: 640, mx: 'auto' }}>
+            Built around strict access control boundaries separating employee self-service, management workflows, and administrative authority.
           </Typography>
         </Box>
 
         <Grid container spacing={3}>
-          <Grid item xs={6} sm={4} md={2}>
-            <Card sx={{ p: 2.5, textAlign: 'center', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main' }}>React 18</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Component UI</Typography>
+          <Grid item xs={12} md={4}>
+            <Card sx={{ height: '100%', p: 3.5, borderRadius: 2.5, border: '1px solid #e2e8f0', boxShadow: 'none', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ width: 44, height: 44, borderRadius: 2, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', mb: 2.5 }}>
+                <DirectoryIcon sx={{ fontSize: 24 }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
+                Personnel Administration
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, mb: 3, flexGrow: 1 }}>
+                Centralized staff directory with pagination, department-level filtering, record deactivation, and comprehensive profile records mapped to reporting managers.
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#0f172a', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Key Capabilities:
+              </Typography>
+              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Real-time staff search & department filtering</Typography>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Manager-to-report relational mapping</Typography>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Status toggles and account deactivation</Typography>
+              </Box>
             </Card>
           </Grid>
-          <Grid item xs={6} sm={4} md={2}>
-            <Card sx={{ p: 2.5, textAlign: 'center', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0284c7' }}>MUI v6</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Enterprise Design</Typography>
+
+          <Grid item xs={12} md={4}>
+            <Card sx={{ height: '100%', p: 3.5, borderRadius: 2.5, border: '1px solid #e2e8f0', boxShadow: 'none', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ width: 44, height: 44, borderRadius: 2, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', mb: 2.5 }}>
+                <AttendanceIcon sx={{ fontSize: 24 }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
+                Time & Attendance Engine
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, mb: 3, flexGrow: 1 }}>
+                Precision clock-in/out engine with compound unique database constraints preventing duplicate punches, automated shift duration math, and late detection.
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#0f172a', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Key Capabilities:
+              </Typography>
+              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Compound-indexed daily records</Typography>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Automated half-day & late threshold detection</Typography>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Organization-wide attendance audit logs</Typography>
+              </Box>
             </Card>
           </Grid>
-          <Grid item xs={6} sm={4} md={2}>
-            <Card sx={{ p: 2.5, textAlign: 'center', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#10b981' }}>Node.js</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Async Engine</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={6} sm={4} md={2}>
-            <Card sx={{ p: 2.5, textAlign: 'center', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#334155' }}>Express</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>REST Architecture</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={6} sm={4} md={2}>
-            <Card sx={{ p: 2.5, textAlign: 'center', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#059669' }}>MongoDB</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Atlas Cloud M0</Typography>
-            </Card>
-          </Grid>
-          <Grid item xs={6} sm={4} md={2}>
-            <Card sx={{ p: 2.5, textAlign: 'center', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#d97706' }}>JWT + Hash</Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Auth Security</Typography>
+
+          <Grid item xs={12} md={4}>
+            <Card sx={{ height: '100%', p: 3.5, borderRadius: 2.5, border: '1px solid #e2e8f0', boxShadow: 'none', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ width: 44, height: 44, borderRadius: 2, backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a', mb: 2.5 }}>
+                <LeaveIcon sx={{ fontSize: 24 }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
+                Leave Lifecycle & Quotas
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, mb: 3, flexGrow: 1 }}>
+                Formal leave governance workflow supporting Casual, Sick, and Earned allocations with automatic balance deduction, manager review modals, and decision audits.
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="caption" sx={{ fontWeight: 700, color: '#0f172a', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Key Capabilities:
+              </Typography>
+              <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.8 }}>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Real-time quota validation before submission</Typography>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Manager approval dialog with decision notes</Typography>
+                <Typography variant="caption" sx={{ color: '#475569' }}>• Automated balance deduction on approval</Typography>
+              </Box>
             </Card>
           </Grid>
         </Grid>
       </Container>
 
-      {/* 6. Footer */}
-      <Box sx={{ borderTop: '1px solid #e2e8f0', py: 4, backgroundColor: '#ffffff' }}>
-        <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 700, color: '#0f172a' }}>
-              StaffSync HRMS
+      {/* 4. Security & Cryptographic Standards */}
+      <Box sx={{ py: 10, backgroundColor: '#0f172a', color: '#ffffff' }} id="security">
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 1.5, py: 0.5, borderRadius: 5, backgroundColor: 'rgba(255, 255, 255, 0.1)', mb: 2 }}>
+                <SecurityIcon sx={{ fontSize: 16, color: '#38bdf8' }} />
+                <Typography variant="caption" sx={{ fontWeight: 700, color: '#e2e8f0', letterSpacing: 0.8, textTransform: 'uppercase' }}>
+                  Enterprise Security Layer
+                </Typography>
+              </Box>
+
+              <Typography variant="h3" sx={{ fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', mb: 2 }}>
+                Airtight Access Control & Data Isolation
+              </Typography>
+
+              <Typography variant="body1" sx={{ color: '#94a3b8', lineHeight: 1.8, mb: 4 }}>
+                The application employs cryptographic protection at every entry point. Credentials are never stored in plain text, sessions are secured via stateless cryptographically signed tokens, and every API request passes through role verification middleware.
+              </Typography>
+
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                  <CheckIcon sx={{ color: '#10b981', mt: 0.3 }} />
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f8fafc' }}>Bcrypt Password Hashing (10 Rounds)</Typography>
+                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>Salted hashes ensure passwords cannot be reversed even in database dump scenarios.</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                  <CheckIcon sx={{ color: '#10b981', mt: 0.3 }} />
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f8fafc' }}>Stateless JWT Authorization Headers</Typography>
+                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>Cryptographic Bearer tokens protect client routes and Express REST endpoints.</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                  <CheckIcon sx={{ color: '#10b981', mt: 0.3 }} />
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f8fafc' }}>Role Guard Middleware (HTTP 401 / 403)</Typography>
+                    <Typography variant="caption" sx={{ color: '#94a3b8' }}>Non-permitted roles are rejected at the network layer prior to controller execution.</Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3.5,
+                  borderRadius: 3,
+                  backgroundColor: '#1e293b',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  fontFamily: 'monospace',
+                }}
+              >
+                <Typography variant="caption" sx={{ color: '#38bdf8', fontWeight: 700, display: 'block', mb: 1.5 }}>
+                  // Auth & Role Enforcement Flow
+                </Typography>
+                <Box sx={{ color: '#cbd5e1', fontSize: 13, lineHeight: 1.8 }}>
+                  <div>POST /api/auth/login <span style={{ color: '#10b981' }}>200 OK</span></div>
+                  <div>↳ Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</div>
+                  <div style={{ color: '#64748b', margin: '8px 0' }}>// Request to protected endpoint:</div>
+                  <div>GET /api/employees</div>
+                  <div>↳ Header: Authorization: Bearer &lt;token&gt;</div>
+                  <div>↳ Middleware: verifyToken() → <span style={{ color: '#10b981' }}>Valid</span></div>
+                  <div>↳ RoleCheck: ['manager', 'hr'].includes(req.user.role) → <span style={{ color: '#10b981' }}>Authorized</span></div>
+                  <div style={{ color: '#10b981', marginTop: 8 }}>✓ Response: 200 OK (Serialized JSON records)</div>
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* 5. Evaluation Sandbox (Clean, Professional Demo Access) */}
+      <Container maxWidth="lg" sx={{ py: 10 }} id="sandbox">
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography variant="overline" sx={{ fontWeight: 800, color: '#4f46e5', letterSpacing: 1.5 }}>
+            EVALUATION SANDBOX
+          </Typography>
+          <Typography variant="h3" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', mt: 0.5, mb: 1 }}>
+            Pre-Configured Role Environments
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#64748b', maxWidth: 640, mx: 'auto' }}>
+            Select an operational profile below to authenticate into the system with pre-seeded organizational data.
+          </Typography>
+        </Box>
+
+        <Grid container spacing={3}>
+          {/* HR Card */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ p: 3.5, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+              <Typography variant="overline" sx={{ fontWeight: 700, color: '#4f46e5' }}>Profile Tier 1</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 800, mt: 0.5 }}>HR Director</Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', my: 1.5, fontSize: 13 }}>
+                Full organization visibility, employee onboarding, announcement broadcasts, and organization attendance logs.
+              </Typography>
+              <Box sx={{ p: 1.5, backgroundColor: '#f8fafc', borderRadius: 1.5, mb: 2.5, fontFamily: 'monospace', fontSize: 12 }}>
+                <div>Email: <strong>hr@staffsync.com</strong></div>
+                <div>Pass: <strong>Password123!</strong></div>
+              </Box>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => handleQuickLogin('hr@staffsync.com')}
+                sx={{ backgroundColor: '#0f172a', '&:hover': { backgroundColor: '#1e293b' }, textTransform: 'none', fontWeight: 600 }}
+              >
+                Access HR Workspace
+              </Button>
+            </Card>
+          </Grid>
+
+          {/* Manager Card */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ p: 3.5, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+              <Typography variant="overline" sx={{ fontWeight: 700, color: '#0891b2' }}>Profile Tier 2</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 800, mt: 0.5 }}>Engineering Lead</Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', my: 1.5, fontSize: 13 }}>
+                Department supervision, direct report leave reviews, team presence tracking, and performance evaluations.
+              </Typography>
+              <Box sx={{ p: 1.5, backgroundColor: '#f8fafc', borderRadius: 1.5, mb: 2.5, fontFamily: 'monospace', fontSize: 12 }}>
+                <div>Email: <strong>manager@staffsync.com</strong></div>
+                <div>Pass: <strong>Password123!</strong></div>
+              </Box>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => handleQuickLogin('manager@staffsync.com')}
+                sx={{ backgroundColor: '#0f172a', '&:hover': { backgroundColor: '#1e293b' }, textTransform: 'none', fontWeight: 600 }}
+              >
+                Access Manager Workspace
+              </Button>
+            </Card>
+          </Grid>
+
+          {/* Employee Card */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ p: 3.5, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+              <Typography variant="overline" sx={{ fontWeight: 700, color: '#059669' }}>Profile Tier 3</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 800, mt: 0.5 }}>Senior Developer</Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', my: 1.5, fontSize: 13 }}>
+                Daily clock-in/out attendance logging, leave quota balance tracking, training certifications, and bulletins.
+              </Typography>
+              <Box sx={{ p: 1.5, backgroundColor: '#f8fafc', borderRadius: 1.5, mb: 2.5, fontFamily: 'monospace', fontSize: 12 }}>
+                <div>Email: <strong>employee@staffsync.com</strong></div>
+                <div>Pass: <strong>Password123!</strong></div>
+              </Box>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() => handleQuickLogin('employee@staffsync.com')}
+                sx={{ backgroundColor: '#0f172a', '&:hover': { backgroundColor: '#1e293b' }, textTransform: 'none', fontWeight: 600 }}
+              >
+                Access Employee Workspace
+              </Button>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+
+      {/* 6. Corporate Technical Footer */}
+      <Box component="footer" sx={{ borderTop: '1px solid #e2e8f0', py: 5, backgroundColor: '#fafafa' }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} sx={{ mb: 4 }}>
+            <Grid item xs={12} md={5}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#0f172a', mb: 1 }}>
+                StaffSync<span style={{ color: '#4f46e5' }}>.</span>
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#64748b', lineHeight: 1.7, maxWidth: 380 }}>
+                Enterprise Human Resource Management Solution engineered on the MERN stack with strict Role-Based Access Control and multi-collection persistence.
+              </Typography>
+            </Grid>
+            <Grid item xs={6} md={3}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a', mb: 1.5 }}>
+                Architecture
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.8, color: '#64748b', fontSize: 13 }}>
+                <span>React 18 & Material UI</span>
+                <span>Node.js & Express REST API</span>
+                <span>MongoDB Atlas M0 Clustered</span>
+                <span>JWT Cryptographic Tokens</span>
+              </Box>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a', mb: 1.5 }}>
+                Verification & Deliverables
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.8, color: '#64748b', fontSize: 13 }}>
+                <span>Public GitHub: <a href="https://github.com/Keshav-Kasera/StaffSync" target="_blank" rel="noreferrer" style={{ color: '#4f46e5', textDecoration: 'none', fontWeight: 600 }}>Keshav-Kasera/StaffSync</a></span>
+                <span>Database: 8 Mongoose Schema Entities</span>
+                <span>License: MIT Standard Open Source</span>
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ mb: 3 }} />
+
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+            <Typography variant="caption" sx={{ color: '#94a3b8' }}>
+              © 2026 StaffSync Platform. Full Stack Capstone Project.
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              • Full Stack Development Capstone Submission
+            <Typography variant="caption" sx={{ color: '#94a3b8' }}>
+              Authored by Keshav Kasera • MIT License
             </Typography>
           </Box>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            Built with ❤️ by Keshav Kasera • Released under the MIT License
-          </Typography>
         </Container>
       </Box>
     </Box>
