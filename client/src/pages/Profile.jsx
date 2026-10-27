@@ -58,10 +58,10 @@ const Profile = () => {
   return (
     <Box sx={{ maxWidth: 900, mx: 'auto' }}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
           My Profile & Settings
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
+        <Typography variant="body1" sx={{ color: '#94a3b8', mt: 0.5 }}>
           Manage your personal information, contact methods, and account security.
         </Typography>
       </Box>

@@ -138,10 +138,10 @@ const Employees = () => {
     <Box>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
             Employee Directory
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
+          <Typography variant="body1" sx={{ color: '#94a3b8', mt: 0.5 }}>
             Browse staff profiles, record performance reviews, and manage team members.
           </Typography>
         </Box>
@@ -168,7 +168,7 @@ const Employees = () => {
             onChange={(e) => setSearch(e.target.value)}
             sx={{ flexGrow: 1, minWidth: 240 }}
             InputProps={{
-              startAdornment: <SearchIcon sx={{ color: 'text.secondary', mr: 1 }} />,
+              startAdornment: <SearchIcon sx={{ color: '#8b949e', mr: 1 }} />,
             }}
           />
           <TextField
@@ -202,13 +202,13 @@ const Employees = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Employee ID</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Name & Contact</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Department</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Designation</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Performance</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>Actions</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Employee ID</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Name & Contact</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Department</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Designation</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Performance</TableCell>
+                <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Status</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

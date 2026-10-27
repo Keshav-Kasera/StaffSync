@@ -104,10 +104,10 @@ const Training = () => {
     <Box>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
             Training & Upskilling Programs
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
+          <Typography variant="body1" sx={{ color: '#94a3b8', mt: 0.5 }}>
             Enroll in professional skill certifications and monitor developmental milestones.
           </Typography>
         </Box>
@@ -128,9 +128,9 @@ const Training = () => {
       <Grid container spacing={3}>
         {trainings.length === 0 ? (
           <Grid item xs={12}>
-            <Card sx={{ p: 6, textAlign: 'center' }}>
-              <SchoolIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-              <Typography variant="h6" sx={{ color: 'text.secondary' }}>
+            <Card sx={{ p: 6, textAlign: 'center', bgcolor: '#0f1115' }}>
+              <SchoolIcon sx={{ fontSize: 48, color: '#6e7681', mb: 1 }} />
+              <Typography variant="h6" sx={{ color: '#8b949e' }}>
                 No active training modules available
               </Typography>
             </Card>
@@ -140,7 +140,7 @@ const Training = () => {
             const progress = getEnrollmentProgress(t);
             return (
               <Grid item xs={12} md={6} key={t._id}>
-                <Card sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#0f1115', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Chip label={t.category} size="small" color="primary" variant="outlined" sx={{ fontWeight: 600 }} />
                     <Chip
@@ -151,10 +151,10 @@ const Training = () => {
                     />
                   </Box>
 
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 1, color: '#f3f4f6' }}>
                     {t.title}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1, mb: 3, lineHeight: 1.6 }}>
+                  <Typography variant="body2" sx={{ color: '#94a3b8', flexGrow: 1, mb: 3, lineHeight: 1.6 }}>
                     {t.description}
                   </Typography>
 

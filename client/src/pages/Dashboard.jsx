@@ -3,7 +3,6 @@ import {
   Box,
   Grid,
   Card,
-  CardContent,
   Typography,
   Button,
   Chip,
@@ -13,7 +12,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   CircularProgress,
   Alert,
   IconButton,
@@ -37,24 +35,24 @@ import axiosClient from '../api/axiosClient';
 // Palette mapping for Obsidian Technical Grid
 const colorStyles = {
   primary: {
-    bg: 'rgba(16, 185, 129, 0.08)',
+    bg: 'rgba(16, 185, 129, 0.1)',
     iconColor: '#10b981',
-    border: 'rgba(16, 185, 129, 0.25)',
+    border: 'rgba(16, 185, 129, 0.3)',
   },
   secondary: {
-    bg: 'rgba(56, 189, 248, 0.08)',
+    bg: 'rgba(56, 189, 248, 0.1)',
     iconColor: '#38bdf8',
-    border: 'rgba(56, 189, 248, 0.25)',
+    border: 'rgba(56, 189, 248, 0.3)',
   },
   success: {
-    bg: 'rgba(16, 185, 129, 0.08)',
+    bg: 'rgba(16, 185, 129, 0.1)',
     iconColor: '#10b981',
-    border: 'rgba(16, 185, 129, 0.25)',
+    border: 'rgba(16, 185, 129, 0.3)',
   },
   warning: {
-    bg: 'rgba(245, 158, 11, 0.08)',
+    bg: 'rgba(245, 158, 11, 0.1)',
     iconColor: '#f59e0b',
-    border: 'rgba(245, 158, 11, 0.25)',
+    border: 'rgba(245, 158, 11, 0.3)',
   },
 };
 
@@ -113,10 +111,10 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) =
         {/* Clean, perfectly centered icon badge */}
         <Box
           sx={{
-            width: 48,
-            height: 48,
-            minWidth: 48,
-            borderRadius: 2.5,
+            width: 44,
+            height: 44,
+            minWidth: 44,
+            borderRadius: 1.5,
             backgroundColor: currentStyle.bg,
             border: `1px solid ${currentStyle.border}`,
             display: 'flex',
@@ -125,12 +123,12 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) =
             color: currentStyle.iconColor,
           }}
         >
-          {React.cloneElement(icon, { sx: { fontSize: 24, color: currentStyle.iconColor } })}
+          {React.cloneElement(icon, { sx: { fontSize: 22, color: currentStyle.iconColor } })}
         </Box>
       </Box>
 
       {subtitle && (
-        <Typography variant="body2" sx={{ color: '#64748b', fontSize: 13 }}>
+        <Typography variant="body2" sx={{ color: '#8b949e', fontSize: 13 }}>
           {subtitle}
         </Typography>
       )}
@@ -203,14 +201,14 @@ const Dashboard = () => {
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-        <CircularProgress />
+        <CircularProgress color="primary" />
       </Box>
     );
   }
 
   if (error) {
     return (
-      <Alert severity="error" sx={{ my: 3 }}>
+      <Alert severity="error" sx={{ my: 3, bgcolor: 'rgba(244, 63, 94, 0.1)', color: '#fb7185' }}>
         {error}
       </Alert>
     );
@@ -229,9 +227,14 @@ const Dashboard = () => {
           </Typography>
         </Box>
         <Chip
-          label={`Logged in as ${user?.role?.toUpperCase()}`}
-          color={user?.role === 'hr' ? 'secondary' : user?.role === 'manager' ? 'primary' : 'success'}
-          sx={{ fontWeight: 700, px: 1 }}
+          label={`ROLE: ${user?.role?.toUpperCase()}`}
+          sx={{
+            fontWeight: 700,
+            px: 1,
+            bgcolor: user?.role === 'hr' ? 'rgba(16, 185, 129, 0.12)' : user?.role === 'manager' ? 'rgba(56, 189, 248, 0.12)' : 'rgba(167, 139, 250, 0.12)',
+            color: user?.role === 'hr' ? '#10b981' : user?.role === 'manager' ? '#38bdf8' : '#a78bfa',
+            border: '1px solid currentColor',
+          }}
         />
       </Box>
 
@@ -245,7 +248,7 @@ const Dashboard = () => {
                 value={data.metrics.totalEmployees}
                 icon={<PeopleIcon />}
                 color="primary"
-                subtitle="Active workforce"
+                subtitle="Active workforce records"
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -254,7 +257,7 @@ const Dashboard = () => {
                 value={data.metrics.totalManagers}
                 icon={<SupervisorIcon />}
                 color="secondary"
-                subtitle="Department leaders"
+                subtitle="Department leadership"
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -280,12 +283,12 @@ const Dashboard = () => {
           {/* Department Breakdown & Recent Leaves */}
           <Grid container spacing={3}>
             <Grid item xs={12} md={7}>
-              <Card sx={{ p: 3, height: '100%', borderRadius: 3, border: '1px solid #e2e8f0' }}>
+              <Card sx={{ p: 3, height: '100%', borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#0f1115' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#f3f4f6' }}>
                     Recent Leave Applications
                   </Typography>
-                  <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/leaves')}>
+                  <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/leaves')} sx={{ color: '#10b981' }}>
                     View All
                   </Button>
                 </Box>
@@ -293,27 +296,29 @@ const Dashboard = () => {
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ fontWeight: 700 }}>Employee</TableCell>
-                        <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
-                        <TableCell sx={{ fontWeight: 700 }}>Days</TableCell>
-                        <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 700 }}>Action</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Employee</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Type</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Days</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Status</TableCell>
+                        <TableCell align="right" sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Action</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {data.recentLeaves?.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={5} align="center">No recent leave requests</TableCell>
+                          <TableCell colSpan={5} align="center" sx={{ color: '#6e7681', py: 3 }}>
+                            No recent leave requests
+                          </TableCell>
                         </TableRow>
                       ) : (
                         data.recentLeaves?.map((leave) => (
                           <TableRow key={leave._id}>
                             <TableCell>
-                              <Typography variant="body2" sx={{ fontWeight: 600 }}>{leave.user?.name}</Typography>
-                              <Typography variant="caption" sx={{ color: 'text.secondary' }}>{leave.employee?.department}</Typography>
+                              <Typography variant="body2" sx={{ fontWeight: 600, color: '#f3f4f6' }}>{leave.user?.name}</Typography>
+                              <Typography variant="caption" sx={{ color: '#8b949e' }}>{leave.employee?.department}</Typography>
                             </TableCell>
-                            <TableCell>{leave.leaveType}</TableCell>
-                            <TableCell>{leave.totalDays}</TableCell>
+                            <TableCell sx={{ color: '#e2e8f0' }}>{leave.leaveType}</TableCell>
+                            <TableCell sx={{ color: '#e2e8f0' }}>{leave.totalDays}</TableCell>
                             <TableCell>
                               <Chip
                                 label={leave.status}
@@ -336,7 +341,7 @@ const Dashboard = () => {
                                   </Tooltip>
                                 </Box>
                               ) : (
-                                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Resolved</Typography>
+                                <Typography variant="caption" sx={{ color: '#6e7681' }}>Resolved</Typography>
                               )}
                             </TableCell>
                           </TableRow>
@@ -350,8 +355,8 @@ const Dashboard = () => {
 
             {/* Department Breakdown */}
             <Grid item xs={12} md={5}>
-              <Card sx={{ p: 3, height: '100%', borderRadius: 3, border: '1px solid #e2e8f0' }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
+              <Card sx={{ p: 3, height: '100%', borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#0f1115' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, color: '#f3f4f6' }}>
                   Department Distribution
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
@@ -360,16 +365,16 @@ const Dashboard = () => {
                       key={dept._id}
                       sx={{
                         p: 1.5,
-                        borderRadius: 2,
-                        backgroundColor: '#f8fafc',
+                        borderRadius: 1.5,
+                        backgroundColor: 'rgba(255, 255, 255, 0.02)',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        border: '1px solid #f1f5f9',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
                       }}
                     >
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>{dept._id || 'Unassigned'}</Typography>
-                      <Chip label={`${dept.count} Members`} size="small" color="primary" variant="outlined" />
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#f3f4f6' }}>{dept._id || 'Unassigned'}</Typography>
+                      <Chip label={`${dept.count} Members`} size="small" sx={{ color: '#10b981', bgcolor: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)' }} />
                     </Box>
                   ))}
                 </Box>
@@ -421,12 +426,12 @@ const Dashboard = () => {
             </Grid>
           </Grid>
 
-          <Card sx={{ p: 3, borderRadius: 3, border: '1px solid #e2e8f0' }}>
+          <Card sx={{ p: 3, borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#0f1115' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#f3f4f6' }}>
                 Pending Team Leave Requests
               </Typography>
-              <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/leaves')}>
+              <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/leaves')} sx={{ color: '#10b981' }}>
                 Manage Leaves
               </Button>
             </Box>
@@ -434,25 +439,27 @@ const Dashboard = () => {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700 }}>Member</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Dates</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Days</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700 }}>Action</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Member</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Type</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Dates</TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Days</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, color: '#94a3b8 !important' }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data.recentTeamLeaves?.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">No pending leave requests from your team</TableCell>
+                      <TableCell colSpan={5} align="center" sx={{ color: '#6e7681', py: 3 }}>
+                        No pending leave requests from your team
+                      </TableCell>
                     </TableRow>
                   ) : (
                     data.recentTeamLeaves?.map((leave) => (
                       <TableRow key={leave._id}>
-                        <TableCell sx={{ fontWeight: 600 }}>{leave.user?.name}</TableCell>
-                        <TableCell>{leave.leaveType}</TableCell>
-                        <TableCell>{new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}</TableCell>
-                        <TableCell>{leave.totalDays} Days</TableCell>
+                        <TableCell sx={{ fontWeight: 600, color: '#f3f4f6' }}>{leave.user?.name}</TableCell>
+                        <TableCell sx={{ color: '#e2e8f0' }}>{leave.leaveType}</TableCell>
+                        <TableCell sx={{ color: '#e2e8f0' }}>{new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}</TableCell>
+                        <TableCell sx={{ color: '#e2e8f0' }}>{leave.totalDays} Days</TableCell>
                         <TableCell align="right">
                           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                             <Button size="small" variant="contained" color="success" onClick={() => handleLeaveDecision(leave._id, 'Approved')}>
@@ -479,31 +486,31 @@ const Dashboard = () => {
           <Grid container spacing={3} sx={{ mb: 4 }}>
             {/* Clock-In / Clock-Out Interactive Card */}
             <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', p: 3, borderRadius: 3, border: '2px solid', borderColor: data.metrics.isClockedIn ? (data.metrics.isClockedOut ? '#e2e8f0' : 'success.main') : 'primary.light' }}>
+              <Card sx={{ height: '100%', p: 3, borderRadius: 2, bgcolor: '#0f1115', border: '1px solid', borderColor: data.metrics.isClockedIn ? (data.metrics.isClockedOut ? 'rgba(255, 255, 255, 0.08)' : '#10b981') : 'rgba(255, 255, 255, 0.12)' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#8b949e', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 10 }}>
                     TODAY'S ATTENDANCE
                   </Typography>
                   <Box
                     sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 2,
-                      backgroundColor: '#eef2ff',
-                      border: '1px solid #c7d2fe',
+                      width: 40,
+                      height: 40,
+                      borderRadius: 1.5,
+                      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#4f46e5',
+                      color: '#10b981',
                     }}
                   >
-                    <AccessTimeIcon sx={{ fontSize: 22 }} />
+                    <AccessTimeIcon sx={{ fontSize: 20 }} />
                   </Box>
                 </Box>
-                <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
+                <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, color: '#f3f4f6' }}>
                   {data.metrics.isClockedIn ? (data.metrics.isClockedOut ? 'Shift Completed' : 'Clocked In') : 'Not Clocked In'}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                <Typography variant="body2" sx={{ color: '#8b949e', mb: 2.5 }}>
                   {data.metrics.isClockedIn
                     ? `Clock-in recorded at ${new Date(data.todayAttendanceRecord?.clockIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
                     : 'Remember to mark your attendance before 9:30 AM'}
@@ -518,7 +525,7 @@ const Dashboard = () => {
                       {clocking ? 'Clocking Out...' : 'Clock Out'}
                     </Button>
                   ) : (
-                    <Button variant="outlined" fullWidth disabled sx={{ fontWeight: 600 }}>
+                    <Button variant="outlined" fullWidth disabled sx={{ fontWeight: 600, color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
                       Shift Completed
                     </Button>
                   )}
@@ -535,8 +542,8 @@ const Dashboard = () => {
                 color="success"
                 subtitle="Total verified attendance"
                 action={
-                  <Button size="small" onClick={() => navigate('/attendance')}>
-                    View Full Attendance Log
+                  <Button size="small" onClick={() => navigate('/attendance')} sx={{ color: '#10b981', p: 0 }}>
+                    View Full Attendance Log →
                   </Button>
                 }
               />
@@ -544,48 +551,48 @@ const Dashboard = () => {
 
             {/* Leave Balance Overview */}
             <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', p: 3, borderRadius: 3, border: '1px solid #e2e8f0' }}>
+              <Card sx={{ height: '100%', p: 3, borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#0f1115' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#8b949e', textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 10 }}>
                     LEAVE BALANCES
                   </Typography>
                   <Box
                     sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 2,
-                      backgroundColor: '#ecfeff',
-                      border: '1px solid #a5f3fc',
+                      width: 40,
+                      height: 40,
+                      borderRadius: 1.5,
+                      backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                      border: '1px solid rgba(56, 189, 248, 0.3)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#0891b2',
+                      color: '#38bdf8',
                     }}
                   >
-                    <EventNoteIcon sx={{ fontSize: 22 }} />
+                    <EventNoteIcon sx={{ fontSize: 20 }} />
                   </Box>
                 </Box>
-                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                  <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: '#f8fafc', borderRadius: 2 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main' }}>
+                <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
+                  <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: 'rgba(255, 255, 255, 0.02)', borderRadius: 1.5, border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 800, color: '#10b981', fontFamily: '"JetBrains Mono", monospace' }}>
                       {data.metrics.leaveBalance?.casual || 0}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Casual</Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>Casual</Typography>
                   </Box>
-                  <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: '#f8fafc', borderRadius: 2 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: 'secondary.main' }}>
+                  <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: 'rgba(255, 255, 255, 0.02)', borderRadius: 1.5, border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 800, color: '#38bdf8', fontFamily: '"JetBrains Mono", monospace' }}>
                       {data.metrics.leaveBalance?.sick || 0}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Sick</Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>Sick</Typography>
                   </Box>
-                  <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: '#f8fafc', borderRadius: 2 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800, color: 'success.main' }}>
+                  <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: 'rgba(255, 255, 255, 0.02)', borderRadius: 1.5, border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 800, color: '#f59e0b', fontFamily: '"JetBrains Mono", monospace' }}>
                       {data.metrics.leaveBalance?.earned || 0}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Earned</Typography>
+                    <Typography variant="caption" sx={{ color: '#8b949e' }}>Earned</Typography>
                   </Box>
                 </Box>
-                <Button variant="outlined" fullWidth onClick={() => navigate('/leaves')}>
+                <Button variant="outlined" fullWidth onClick={() => navigate('/leaves')} sx={{ borderColor: 'rgba(255, 255, 255, 0.12)', color: '#e5e7eb' }}>
                   Apply For Leave
                 </Button>
               </Card>
@@ -594,13 +601,13 @@ const Dashboard = () => {
         </>
       )}
 
-      {/* Announcements Noticeboard (Visible across all roles) */}
-      <Card sx={{ p: 3, mt: 4, borderRadius: 3, border: '1px solid #e2e8f0' }}>
+      {/* Announcements Noticeboard */}
+      <Card sx={{ p: 3, mt: 4, borderRadius: 2, border: '1px solid rgba(255, 255, 255, 0.08)', bgcolor: '#0f1115' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: '#f3f4f6' }}>
             Corporate Bulletins & Announcements
           </Typography>
-          <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/announcements')}>
+          <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/announcements')} sx={{ color: '#10b981' }}>
             All Notices
           </Button>
         </Box>
@@ -609,23 +616,23 @@ const Dashboard = () => {
             <Grid item xs={12} md={6} key={item._id}>
               <Box
                 sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  border: '1px solid #e2e8f0',
-                  backgroundColor: item.pinned ? 'rgba(79, 70, 229, 0.03)' : '#ffffff',
+                  p: 2.2,
+                  borderRadius: 1.5,
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backgroundColor: item.pinned ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.02)',
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   {item.pinned && <Chip label="PINNED" size="small" color="primary" sx={{ fontSize: 10, height: 20 }} />}
                   <Chip label={item.category} size="small" variant="outlined" sx={{ fontSize: 10, height: 20 }} />
-                  <Typography variant="caption" sx={{ color: 'text.secondary', ml: 'auto' }}>
+                  <Typography variant="caption" sx={{ color: '#6e7681', ml: 'auto' }}>
                     {new Date(item.createdAt).toLocaleDateString()}
                   </Typography>
                 </Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#0f172a' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#f3f4f6' }}>
                   {item.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                <Typography variant="body2" sx={{ color: '#94a3b8', mt: 0.5 }}>
                   {item.content}
                 </Typography>
               </Box>

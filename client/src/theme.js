@@ -38,8 +38,8 @@ const theme = createTheme({
       paper: '#0f1115',   // Elevated technical dark surface
     },
     text: {
-      primary: '#f3f4f6',   // High-contrast zinc
-      secondary: '#8b949e', // Muted steel
+      primary: '#f3f4f6',   // High-contrast zinc (100% visible)
+      secondary: '#94a3b8', // Crisp slate-400 (clearly visible)
     },
     divider: 'rgba(255, 255, 255, 0.08)',
   },
@@ -83,26 +83,26 @@ const theme = createTheme({
       color: '#f3f4f6',
     },
     subtitle1: {
-      color: '#8b949e',
+      color: '#94a3b8',
       lineHeight: 1.6,
     },
     subtitle2: {
-      color: '#8b949e',
+      color: '#94a3b8',
       fontWeight: 600,
       fontSize: 13,
     },
     body1: {
-      color: '#e5e7eb',
+      color: '#e2e8f0',
       lineHeight: 1.6,
       fontSize: 14,
     },
     body2: {
-      color: '#8b949e',
+      color: '#94a3b8',
       lineHeight: 1.6,
       fontSize: 13,
     },
     caption: {
-      color: '#6e7681',
+      color: '#94a3b8',
       fontSize: 11,
       fontFamily: ['"JetBrains Mono"', 'ui-monospace', 'monospace'].join(','),
       letterSpacing: '0.04em',
@@ -117,6 +117,13 @@ const theme = createTheme({
     borderRadius: 6,
   },
   components: {
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          color: '#f3f4f6',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -169,26 +176,26 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#0a0c0f',
-          '& th': {
-            fontWeight: 700,
-            color: '#8b949e',
-            fontSize: '11px',
-            fontFamily: ['"JetBrains Mono"', 'ui-monospace', 'monospace'].join(','),
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            padding: '10px 14px',
-          },
         },
       },
     },
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.07)',
           padding: '12px 14px',
-          color: '#e5e7eb',
+          color: '#e2e8f0',
           fontSize: 13,
+        },
+        head: {
+          fontWeight: 700,
+          color: '#94a3b8',
+          fontSize: '11px',
+          fontFamily: ['"JetBrains Mono"', 'ui-monospace', 'monospace'].join(','),
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          backgroundColor: '#0a0c0f',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         },
       },
     },
@@ -197,7 +204,35 @@ const theme = createTheme({
         root: {
           transition: 'background-color 0.12s ease',
           '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.025)',
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+          },
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          minHeight: 44,
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        },
+        indicator: {
+          backgroundColor: '#10b981',
+          height: 2,
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontSize: 13,
+          fontWeight: 600,
+          color: '#8b949e',
+          minHeight: 44,
+          padding: '8px 16px',
+          '&.Mui-selected': {
+            color: '#10b981',
+            fontWeight: 700,
           },
         },
       },
@@ -221,6 +256,7 @@ const theme = createTheme({
         input: {
           padding: '10px 14px',
           fontSize: 13,
+          color: '#f3f4f6',
         },
       },
     },

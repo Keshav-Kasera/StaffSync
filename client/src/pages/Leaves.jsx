@@ -197,10 +197,10 @@ const Leaves = () => {
     <Box>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
             Leave Management
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
+          <Typography variant="body1" sx={{ color: '#94a3b8', mt: 0.5 }}>
             Submit time-off requests, monitor leave balances, and review departmental approvals.
           </Typography>
         </Box>
@@ -218,36 +218,36 @@ const Leaves = () => {
       {/* Balance Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={4}>
-          <Card sx={{ p: 3, borderLeft: '4px solid #4f46e5' }}>
-            <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+          <Card sx={{ p: 3, borderLeft: '4px solid #10b981', bgcolor: '#0f1115' }}>
+            <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, letterSpacing: '0.06em' }}>
               CASUAL LEAVE
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'primary.main', my: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#10b981', my: 1, fontFamily: '"JetBrains Mono", monospace' }}>
               {leaveBalance?.casual || 0} Days
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>Available annual allocation</Typography>
+            <Typography variant="caption" sx={{ color: '#6e7681' }}>Available annual allocation</Typography>
           </Card>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <Card sx={{ p: 3, borderLeft: '4px solid #06b6d4' }}>
-            <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+          <Card sx={{ p: 3, borderLeft: '4px solid #38bdf8', bgcolor: '#0f1115' }}>
+            <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, letterSpacing: '0.06em' }}>
               SICK LEAVE
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'secondary.main', my: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#38bdf8', my: 1, fontFamily: '"JetBrains Mono", monospace' }}>
               {leaveBalance?.sick || 0} Days
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>Medical emergency balance</Typography>
+            <Typography variant="caption" sx={{ color: '#6e7681' }}>Medical emergency balance</Typography>
           </Card>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <Card sx={{ p: 3, borderLeft: '4px solid #10b981' }}>
-            <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+          <Card sx={{ p: 3, borderLeft: '4px solid #f59e0b', bgcolor: '#0f1115' }}>
+            <Typography variant="caption" sx={{ color: '#8b949e', fontWeight: 700, letterSpacing: '0.06em' }}>
               EARNED / VACATION LEAVE
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'success.main', my: 1 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#f59e0b', my: 1, fontFamily: '"JetBrains Mono", monospace' }}>
               {leaveBalance?.earned || 0} Days
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>Accrued vacation time</Typography>
+            <Typography variant="caption" sx={{ color: '#6e7681' }}>Accrued vacation time</Typography>
           </Card>
         </Grid>
       </Grid>

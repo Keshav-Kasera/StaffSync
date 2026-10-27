@@ -91,10 +91,10 @@ const Announcements = () => {
     <Box>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
             Company Announcements
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
+          <Typography variant="body1" sx={{ color: '#94a3b8', mt: 0.5 }}>
             Stay updated with official bulletins, policy updates, and corporate notices.
           </Typography>
         </Box>
@@ -115,9 +115,9 @@ const Announcements = () => {
       <Grid container spacing={3}>
         {announcements.length === 0 ? (
           <Grid item xs={12}>
-            <Card sx={{ p: 6, textAlign: 'center' }}>
-              <CampaignIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-              <Typography variant="h6" sx={{ color: 'text.secondary' }}>
+            <Card sx={{ p: 6, textAlign: 'center', bgcolor: '#0f1115' }}>
+              <CampaignIcon sx={{ fontSize: 48, color: '#6e7681', mb: 1 }} />
+              <Typography variant="h6" sx={{ color: '#8b949e' }}>
                 No active announcements at this time
               </Typography>
             </Card>
@@ -131,9 +131,10 @@ const Announcements = () => {
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
-                  border: a.pinned ? '2px solid' : '1px solid',
-                  borderColor: a.pinned ? 'primary.main' : '#e2e8f0',
-                  boxShadow: a.pinned ? '0 4px 20px rgba(79, 70, 229, 0.12)' : 'none',
+                  bgcolor: '#0f1115',
+                  border: a.pinned ? '1px solid' : '1px solid',
+                  borderColor: a.pinned ? '#10b981' : 'rgba(255, 255, 255, 0.08)',
+                  boxShadow: a.pinned ? '0 0 25px rgba(16, 185, 129, 0.15)' : 'none',
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
@@ -164,18 +165,18 @@ const Announcements = () => {
                   )}
                 </Box>
 
-                <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5, color: '#0f172a' }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5, color: '#f3f4f6' }}>
                   {a.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1, lineHeight: 1.7 }}>
+                <Typography variant="body2" sx={{ color: '#94a3b8', flexGrow: 1, lineHeight: 1.7 }}>
                   {a.content}
                 </Typography>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3, pt: 2, borderTop: '1px solid #f1f5f9' }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    Posted by <strong>{a.author?.name || 'HR Team'}</strong>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3, pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  <Typography variant="caption" sx={{ color: '#6e7681' }}>
+                    Posted by <strong style={{ color: '#e5e7eb' }}>{a.author?.name || 'HR Team'}</strong>
                   </Typography>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Typography variant="caption" sx={{ color: '#6e7681' }}>
                     {new Date(a.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                   </Typography>
                 </Box>

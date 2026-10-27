@@ -203,35 +203,36 @@ const Attendance = () => {
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
           Attendance Tracking
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
+        <Typography variant="body1" sx={{ color: '#94a3b8', mt: 0.5 }}>
           Log your daily hours, review past punches, and monitor organizational presence.
         </Typography>
       </Box>
 
       {/* Clock-In Widget */}
-      <Card sx={{ mb: 4, p: 3, border: '1px solid #e2e8f0', borderRadius: 3 }}>
+      <Card sx={{ mb: 4, p: 3, border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: 2, bgcolor: '#0f1115' }}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={7}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Box
                 sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  backgroundColor: todayRecord ? 'success.light' : 'primary.light',
+                  width: 52,
+                  height: 52,
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
+                  color: '#10b981',
                 }}
               >
-                <ClockIcon sx={{ fontSize: 32 }} />
+                <ClockIcon sx={{ fontSize: 26 }} />
               </Box>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: 800 }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#f3f4f6' }}>
                   Today: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
