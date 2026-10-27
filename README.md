@@ -1,0 +1,146 @@
+# StaffSync — Modern Human Resource Management Solution
+
+[![MERN Stack](https://img.shields.io/badge/Stack-MERN%20(Mongo%20%7C%20Express%20%7C%20React%20%7C%20Node)-4f46e5.svg)](https://reactjs.org/)
+[![UI](https://img.shields.io/badge/UI-Material%20UI%20(MUI%20v6)-06b6d4.svg)](https://mui.com/)
+[![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-10b981.svg)](https://www.mongodb.com/atlas)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**StaffSync** is an enterprise-grade Human Resource Management System (HRMS) built on the MERN stack. It centralizes and digitizes core organizational workflows across three distinct permission tiers: **Employees**, **Department Managers**, and **HR Personnel**.
+
+---
+
+## 🌟 Key Features by User Persona
+
+### 👔 1. HR Personnel (Administrative Control)
+* **Staff Directory Management**: Add, view, filter, and deactivate employee accounts across departments.
+* **Workforce Analytics**: Live metrics on attendance rates, total headcount, manager count, and department distributions.
+* **Leave Oversight**: Full visibility into organizational leave applications with historical decision logging.
+* **Corporate Announcements**: Broadcast company-wide notices with category tags, urgency badges, and auto-generated user notifications.
+* **Attendance Auditing**: Organization-wide attendance log with status filtering (`Present`, `Late`, `Half-day`).
+
+### 💼 2. Department Managers (Team Oversight)
+* **Team Supervision**: Real-time visibility into direct reports and team size.
+* **Leave Decision Workflow**: Review, approve, or reject team leave applications with custom feedback comments.
+* **Team Attendance**: Monitor daily check-in and checkout times for all department members.
+* **Performance Reviews**: Record 1-5 star performance ratings and constructive feedback for team members.
+* **Training Coordination**: Create and assign upskilling programs to team members.
+
+### 💻 3. Employees (Self-Service Portal)
+* **One-Click Attendance**: Daily clock-in and clock-out with automatic hour calculation and late detection.
+* **Leave Management**: Apply for Casual, Sick, or Earned leaves with live balance tracking and real-time approval status.
+* **Training & Upskilling**: View assigned courses, track progress percentages, and mark certifications as complete.
+* **Company Noticeboard**: Stay up to date with pinned corporate announcements and alerts.
+* **Personal Profile**: Update contact details, emergency information, and professional skill tags.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies Used |
+| :--- | :--- |
+| **Frontend** | React 18, Material UI (MUI v6), React Router v6, Axios, Emotion |
+| **Backend** | Node.js (v24), Express.js, CORS, Morgan |
+| **Database** | MongoDB Atlas (Cloud NoSQL), Mongoose ODM |
+| **Security** | JSON Web Tokens (JWT), bcryptjs password hashing, Role-Based Access Control (RBAC) middleware |
+| **Optimization** | Route code-splitting (React Lazy/Suspense), Database indexing, Server-side pagination |
+
+---
+
+## 🗄️ Database Architecture (8 Collections)
+
+StaffSync strictly implements the 8 collections mandated by the specification:
+1. **`Users`**: Authentication credentials, hashed passwords, roles (`employee`, `manager`, `hr`), and account status.
+2. **`Employees`**: Profile details, employee IDs, department, designation, and leave balances.
+3. **`Managers`**: Management profiles, department oversight, and team member mapping.
+4. **`Attendance`**: Daily clock-in/out records, total hours, status (`Present`, `Late`, `Half-day`), and compound indexing.
+5. **`Leaves`**: Leave applications, date ranges, total days, approval state (`Pending`, `Approved`, `Rejected`), and reviewer notes.
+6. **`Announcements`**: Official bulletins, priorities (`Urgent`, `High`, `Medium`), categories, and author references.
+7. **`Trainings`**: Professional development modules, durations, and employee completion progress.
+8. **`Notifications`**: Real-time alert logs for leave status updates, new assignments, and broadcasts.
+
+---
+
+## 🚀 Quick Start Guide (Local Setup)
+
+### Prerequisites
+* [Node.js](https://nodejs.org/) (v16 or higher)
+* [Git](https://git-scm.com/)
+* A free [MongoDB Atlas](https://www.mongodb.com/atlas) connection string
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Keshav-Kasera/StaffSync.git
+cd StaffSync
+```
+
+### 2. Backend Configuration
+Create a `.env` file in the `server/` directory (see `server/.env.example`):
+```env
+PORT=5000
+NODE_ENV=development
+MONGODB_URI=your_mongodb_connection_string_here
+JWT_SECRET=your_jwt_secret_key_here
+CLIENT_URL=http://localhost:5173
+```
+
+### 3. Install Dependencies
+```bash
+# Install backend dependencies
+cd server
+npm install
+
+# Install frontend dependencies
+cd ../client
+npm install
+```
+
+### 4. Seed Sample Database Records
+Populate your database with sample accounts and initial records across all 8 collections:
+```bash
+cd ../server
+node src/utils/seedData.js
+```
+
+### 5. Run the Application
+**Terminal 1 (Backend Server):**
+```bash
+cd server
+npm run dev
+# Server runs on http://localhost:5000
+```
+
+**Terminal 2 (Frontend Client):**
+```bash
+cd client
+npm run dev
+# Client runs on http://localhost:5173
+```
+
+---
+
+## 🔑 Default Demo Accounts
+
+For quick evaluation, the following pre-configured accounts are available after seeding:
+
+| Role | Email Address | Password |
+| :--- | :--- | :--- |
+| **HR Director** | `hr@staffsync.com` | `Password123!` |
+| **Engineering Manager** | `manager@staffsync.com` | `Password123!` |
+| **Employee (Alex)** | `employee@staffsync.com` | `Password123!` |
+| **Employee (Sarah)** | `sarah.chen@staffsync.com` | `Password123!` |
+
+*(One-click demo buttons are also provided directly on the login screen for rapid evaluator testing).*
+
+---
+
+## 🔒 Security Best Practices Implemented
+
+* **Protected API Endpoints**: All private routes verify JWT Bearer tokens before execution.
+* **Role-Based Guards**: Non-admin users attempting to access HR or managerial endpoints receive HTTP 403 Forbidden.
+* **Password Hashing**: User passwords are encrypted with `bcryptjs` using a 10-round salt before being stored.
+* **Environment Isolation**: No credentials, database strings, or JWT secrets are hardcoded in the codebase.
+
+---
+
+## 📄 License
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
