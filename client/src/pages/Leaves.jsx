@@ -31,6 +31,7 @@ import {
   Close as RejectIcon,
   EventNote as EventNoteIcon,
   PendingActions as PendingIcon,
+  CalendarMonth as CalendarIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import axiosClient from '../api/axiosClient';
@@ -395,7 +396,7 @@ const Leaves = () => {
         </Card>
       )}
 
-      {/* Apply Leave Dialog */}
+      {/* Apply Leave Dialog with Fixed Date Layout */}
       <Dialog open={openApplyModal} onClose={() => setOpenApplyModal(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 800 }}>Apply for Leave</DialogTitle>
         <DialogContent dividers>
@@ -405,52 +406,65 @@ const Leaves = () => {
             </Alert>
           )}
           <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
-            <TextField
-              select
-              fullWidth
-              label="Leave Type"
-              value={applyData.leaveType}
-              onChange={(e) => setApplyData({ ...applyData, leaveType: e.target.value })}
-            >
-              <MenuItem value="Casual">Casual Leave (Balance: {leaveBalance?.casual || 0})</MenuItem>
-              <MenuItem value="Sick">Sick Leave (Balance: {leaveBalance?.sick || 0})</MenuItem>
-              <MenuItem value="Earned">Earned / Vacation (Balance: {leaveBalance?.earned || 0})</MenuItem>
-              <MenuItem value="Maternity/Paternity">Maternity/Paternity</MenuItem>
-              <MenuItem value="Unpaid">Unpaid Leave</MenuItem>
-            </TextField>
+            <Box>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                LEAVE CATEGORY
+              </Typography>
+              <TextField
+                select
+                fullWidth
+                size="medium"
+                value={applyData.leaveType}
+                onChange={(e) => setApplyData({ ...applyData, leaveType: e.target.value })}
+              >
+                <MenuItem value="Casual">Casual Leave (Available Balance: {leaveBalance?.casual || 0} Days)</MenuItem>
+                <MenuItem value="Sick">Sick Leave (Available Balance: {leaveBalance?.sick || 0} Days)</MenuItem>
+                <MenuItem value="Earned">Earned / Vacation (Available Balance: {leaveBalance?.earned || 0} Days)</MenuItem>
+                <MenuItem value="Maternity/Paternity">Maternity/Paternity Leave</MenuItem>
+                <MenuItem value="Unpaid">Unpaid Leave</MenuItem>
+              </TextField>
+            </Box>
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                  START DATE
+                </Typography>
                 <TextField
                   fullWidth
                   type="date"
-                  label="Start Date"
-                  InputLabelProps={{ shrink: true }}
                   value={applyData.startDate}
                   onChange={(e) => setApplyData({ ...applyData, startDate: e.target.value })}
+                  inputProps={{ 'aria-label': 'Start Date' }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                  END DATE
+                </Typography>
                 <TextField
                   fullWidth
                   type="date"
-                  label="End Date"
-                  InputLabelProps={{ shrink: true }}
                   value={applyData.endDate}
                   onChange={(e) => setApplyData({ ...applyData, endDate: e.target.value })}
+                  inputProps={{ 'aria-label': 'End Date' }}
                 />
               </Grid>
             </Grid>
 
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              label="Reason for Leave"
-              placeholder="Please provide details for your manager to review..."
-              value={applyData.reason}
-              onChange={(e) => setApplyData({ ...applyData, reason: e.target.value })}
-            />
+            <Box>
+              <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                REASON FOR LEAVE
+              </Typography>
+              <TextField
+                fullWidth
+                multiline
+                rows={3}
+                placeholder="Please state the reason for your time-off request..."
+                value={applyData.reason}
+                onChange={(e) => setApplyData({ ...applyData, reason: e.target.value })}
+              />
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 2.5 }}>
