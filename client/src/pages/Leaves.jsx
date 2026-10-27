@@ -307,7 +307,9 @@ const Leaves = () => {
               <TableBody>
                 {pendingLeaves.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} align="center">No pending leave applications right now ✓</TableCell>
+                    <TableCell colSpan={7} align="center" sx={{ color: 'text.secondary', py: 3 }}>
+                      No pending leave applications requiring review
+                    </TableCell>
                   </TableRow>
                 ) : (
                   pendingLeaves.map((l) => (

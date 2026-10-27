@@ -78,48 +78,50 @@ const Register = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)',
+        backgroundColor: '#0f172a',
+        background: 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)',
         p: 2,
+        py: 6,
       }}
     >
       <Card
         sx={{
-          maxWidth: 540,
+          maxWidth: 520,
           width: '100%',
-          borderRadius: 4,
+          borderRadius: 3,
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          border: '1px solid #334155',
           backgroundColor: '#ffffff',
           overflow: 'hidden',
-          my: 4,
         }}
       >
-        <Box sx={{ p: 3, textAlign: 'center', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+        <Box sx={{ p: 3.5, pb: 2.5, textAlign: 'center', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
           <Box
             sx={{
-              width: 48,
-              height: 48,
-              borderRadius: 3,
-              backgroundColor: 'primary.main',
+              width: 44,
+              height: 44,
+              borderRadius: 2,
+              backgroundColor: '#0f172a',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff',
-              margin: '0 auto 8px',
+              margin: '0 auto 10px',
             }}
           >
-            <RegisterIcon sx={{ fontSize: 26 }} />
+            <RegisterIcon sx={{ fontSize: 22 }} />
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a' }}>
-            Create an Account
+          <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
+            New Personnel Enrollment
           </Typography>
-          <Typography variant="body2" sx={{ color: '#64748b' }}>
-            Join the StaffSync workforce management system
+          <Typography variant="body2" sx={{ color: '#64748b', fontSize: 13, mt: 0.5 }}>
+            Create an internal staff account to access the workspace
           </Typography>
         </Box>
 
         <CardContent sx={{ p: 4 }}>
           {error && (
-            <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+            <Alert severity="error" sx={{ mb: 3, borderRadius: 2, fontSize: 13 }}>
               {error}
             </Alert>
           )}
@@ -130,8 +132,9 @@ const Register = () => {
                 <TextField
                   required
                   fullWidth
+                  size="small"
                   id="name"
-                  label="Full Name"
+                  label="Full Legal Name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -142,8 +145,9 @@ const Register = () => {
                 <TextField
                   required
                   fullWidth
+                  size="small"
                   id="email"
-                  label="Email Address"
+                  label="Work Email Address"
                   name="email"
                   type="email"
                   value={formData.email}
@@ -155,6 +159,7 @@ const Register = () => {
                 <TextField
                   required
                   fullWidth
+                  size="small"
                   name="password"
                   label="Password"
                   type="password"
@@ -168,6 +173,7 @@ const Register = () => {
                 <TextField
                   required
                   fullWidth
+                  size="small"
                   name="confirmPassword"
                   label="Confirm Password"
                   type="password"
@@ -181,8 +187,9 @@ const Register = () => {
                 <TextField
                   select
                   fullWidth
+                  size="small"
                   name="role"
-                  label="Account Role"
+                  label="Staff Role"
                   value={formData.role}
                   onChange={handleChange}
                 >
@@ -196,6 +203,7 @@ const Register = () => {
                 <TextField
                   select
                   fullWidth
+                  size="small"
                   name="department"
                   label="Department"
                   value={formData.department}
@@ -212,8 +220,9 @@ const Register = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  size="small"
                   name="designation"
-                  label="Job Title / Designation"
+                  label="Designation / Title"
                   value={formData.designation}
                   onChange={handleChange}
                 />
@@ -222,8 +231,9 @@ const Register = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  size="small"
                   name="phone"
-                  label="Phone Number"
+                  label="Contact Phone"
                   value={formData.phone}
                   onChange={handleChange}
                 />
@@ -234,22 +244,29 @@ const Register = () => {
               type="submit"
               fullWidth
               variant="contained"
-              size="large"
+              size="medium"
               disabled={submitting}
-              sx={{ mt: 3, mb: 2, py: 1.5, fontSize: 16 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                py: 1.2,
+                fontSize: 14,
+                backgroundColor: '#0f172a',
+                '&:hover': { backgroundColor: '#1e293b' },
+              }}
             >
-              {submitting ? <CircularProgress size={24} color="inherit" /> : 'Register'}
+              {submitting ? <CircularProgress size={20} color="inherit" /> : 'Complete Registration'}
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Already have an account?{' '}
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 13 }}>
+                Already registered?{' '}
                 <Link
                   component="button"
                   type="button"
                   variant="body2"
                   onClick={() => navigate('/login')}
-                  sx={{ fontWeight: 700, color: 'primary.main' }}
+                  sx={{ fontWeight: 700, color: '#4f46e5', textDecoration: 'none' }}
                 >
                   Sign in
                 </Link>

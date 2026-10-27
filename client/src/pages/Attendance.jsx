@@ -231,7 +231,7 @@ const Attendance = () => {
                 {actionLoading ? 'Clocking Out...' : 'Clock Out'}
               </Button>
             ) : (
-              <Chip label="Daily Shift Completed ✓" color="success" variant="outlined" sx={{ fontWeight: 700, p: 2 }} />
+              <Chip label="Daily Shift Completed" color="success" variant="outlined" sx={{ fontWeight: 700, p: 2 }} />
             )}
           </Grid>
         </Grid>

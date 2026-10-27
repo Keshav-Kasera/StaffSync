@@ -10,10 +10,16 @@ import {
   Link,
   CircularProgress,
   Divider,
-  Chip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Grid,
 } from '@mui/material';
-import { LockOutlined as LockIcon } from '@mui/icons-material';
+import {
+  LockOutlined as LockIcon,
+  ExpandMore as ExpandMoreIcon,
+  BadgeOutlined as BadgeIcon,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -34,23 +40,15 @@ const Login = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.message || 'Authentication failed. Please verify your credentials.');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleQuickLogin = async (demoEmail) => {
-    setError('');
-    setSubmitting(true);
-    try {
-      await login(demoEmail, 'Password123!');
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Quick login failed.');
-    } finally {
-      setSubmitting(false);
-    }
+  const handleAutofill = (demoEmail) => {
+    setEmail(demoEmail);
+    setPassword('Password123!');
   };
 
   return (
@@ -60,48 +58,49 @@ const Login = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)',
+        backgroundColor: '#0f172a',
+        background: 'radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)',
         p: 2,
       }}
     >
       <Card
         sx={{
-          maxWidth: 480,
+          maxWidth: 440,
           width: '100%',
-          borderRadius: 4,
+          borderRadius: 3,
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          overflow: 'hidden',
+          border: '1px solid #334155',
           backgroundColor: '#ffffff',
+          overflow: 'hidden',
         }}
       >
         <Box sx={{ p: 4, pb: 3, textAlign: 'center', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
           <Box
             sx={{
-              width: 52,
-              height: 52,
-              borderRadius: 3,
-              backgroundColor: 'primary.main',
+              width: 44,
+              height: 44,
+              borderRadius: 2,
+              backgroundColor: '#0f172a',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff',
               margin: '0 auto 12px',
-              boxShadow: '0 8px 16px rgba(79, 70, 229, 0.3)',
             }}
           >
-            <LockIcon sx={{ fontSize: 28 }} />
+            <LockIcon sx={{ fontSize: 22 }} />
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a' }}>
-            Staff<span style={{ color: '#06b6d4' }}>Sync</span>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
+            StaffSync Portal
           </Typography>
-          <Typography variant="body2" sx={{ color: '#64748b', mt: 0.5 }}>
-            Enterprise Human Resource Management Portal
+          <Typography variant="body2" sx={{ color: '#64748b', mt: 0.5, fontSize: 13 }}>
+            Enter your credentials to access the internal workspace
           </Typography>
         </Box>
 
         <CardContent sx={{ p: 4 }}>
           {error && (
-            <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+            <Alert severity="error" sx={{ mb: 3, borderRadius: 2, fontSize: 13 }}>
               {error}
             </Alert>
           )}
@@ -112,12 +111,13 @@ const Login = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Work Email"
               name="email"
               autoComplete="email"
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              size="small"
               sx={{ mb: 2 }}
             />
             <TextField
@@ -131,6 +131,7 @@ const Login = () => {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              size="small"
               sx={{ mb: 3 }}
             />
 
@@ -138,74 +139,94 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="contained"
-              size="large"
+              size="medium"
               disabled={submitting}
-              sx={{ py: 1.5, fontSize: 16 }}
+              sx={{
+                py: 1.2,
+                fontSize: 14,
+                backgroundColor: '#0f172a',
+                '&:hover': { backgroundColor: '#1e293b' },
+              }}
             >
-              {submitting ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+              {submitting ? <CircularProgress size={20} color="inherit" /> : 'Authenticate & Sign In'}
             </Button>
 
             <Box sx={{ mt: 2.5, textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Don't have an account?{' '}
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 13 }}>
+                Don't have an internal account?{' '}
                 <Link
                   component="button"
                   type="button"
                   variant="body2"
                   onClick={() => navigate('/register')}
-                  sx={{ fontWeight: 700, color: 'primary.main' }}
+                  sx={{ fontWeight: 700, color: '#4f46e5', textDecoration: 'none' }}
                 >
-                  Register here
+                  Register
                 </Link>
               </Typography>
             </Box>
 
-            <Divider sx={{ my: 3 }}>
-              <Chip label="Quick Demo Logins" size="small" sx={{ fontWeight: 600, color: '#64748b' }} />
-            </Divider>
-
-            {/* Quick Demo Login Buttons for Evaluator / Mentor */}
-            <Grid container spacing={1.5}>
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="secondary"
-                  size="small"
-                  onClick={() => handleQuickLogin('hr@staffsync.com')}
-                  disabled={submitting}
-                  sx={{ justifyContent: 'flex-start', px: 2 }}
-                >
-                  👔 <strong>HR Admin:</strong>&nbsp; hr@staffsync.com
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={() => handleQuickLogin('manager@staffsync.com')}
-                  disabled={submitting}
-                  sx={{ justifyContent: 'flex-start', px: 2 }}
-                >
-                  💼 <strong>Manager:</strong>&nbsp; manager@staffsync.com
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="success"
-                  size="small"
-                  onClick={() => handleQuickLogin('employee@staffsync.com')}
-                  disabled={submitting}
-                  sx={{ justifyContent: 'flex-start', px: 2 }}
-                >
-                  💻 <strong>Employee:</strong>&nbsp; employee@staffsync.com
-                </Button>
-              </Grid>
-            </Grid>
+            {/* Subtle, Collapsible Academic Testing Assistant */}
+            <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid #f1f5f9' }}>
+              <Accordion
+                elevation={0}
+                sx={{
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px !important',
+                  '&:before': { display: 'none' },
+                  backgroundColor: '#f8fafc',
+                }}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <BadgeIcon sx={{ fontSize: 16, color: '#64748b' }} />
+                    <Typography variant="caption" sx={{ fontWeight: 700, color: '#475569' }}>
+                      Academic Testing / Autofill Profiles
+                    </Typography>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails sx={{ pt: 0, pb: 2 }}>
+                  <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 1.5, fontSize: 11 }}>
+                    Click an operational profile below to autofill verified test credentials:
+                  </Typography>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        onClick={() => handleAutofill('hr@staffsync.com')}
+                        sx={{ fontSize: 12, justifyContent: 'flex-start', py: 0.5, borderColor: '#cbd5e1', color: '#0f172a' }}
+                      >
+                        <strong>HR Director:</strong>&nbsp;hr@staffsync.com
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        onClick={() => handleAutofill('manager@staffsync.com')}
+                        sx={{ fontSize: 12, justifyContent: 'flex-start', py: 0.5, borderColor: '#cbd5e1', color: '#0f172a' }}
+                      >
+                        <strong>Manager:</strong>&nbsp;manager@staffsync.com
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        onClick={() => handleAutofill('employee@staffsync.com')}
+                        sx={{ fontSize: 12, justifyContent: 'flex-start', py: 0.5, borderColor: '#cbd5e1', color: '#0f172a' }}
+                      >
+                        <strong>Employee:</strong>&nbsp;employee@staffsync.com
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </AccordionDetails>
+              </Accordion>
+            </Box>
           </Box>
         </CardContent>
       </Card>

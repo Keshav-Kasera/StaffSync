@@ -220,7 +220,7 @@ const Dashboard = () => {
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 800, color: '#0f172a' }}>
-            Welcome back, {user?.name}! 👋
+            Welcome back, {user?.name}
           </Typography>
           <Typography variant="body1" sx={{ color: 'text.secondary', mt: 0.5 }}>
             Here is what's happening today in your workspace.
@@ -479,10 +479,24 @@ const Dashboard = () => {
             <Grid item xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', p: 3, borderRadius: 3, border: '2px solid', borderColor: data.metrics.isClockedIn ? (data.metrics.isClockedOut ? '#e2e8f0' : 'success.main') : 'primary.light' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.secondary' }}>
+                  <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11 }}>
                     TODAY'S ATTENDANCE
                   </Typography>
-                  <AccessTimeIcon color="primary" />
+                  <Box
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 2,
+                      backgroundColor: '#eef2ff',
+                      border: '1px solid #c7d2fe',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#4f46e5',
+                    }}
+                  >
+                    <AccessTimeIcon sx={{ fontSize: 22 }} />
+                  </Box>
                 </Box>
                 <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
                   {data.metrics.isClockedIn ? (data.metrics.isClockedOut ? 'Shift Completed' : 'Clocked In') : 'Not Clocked In'}
@@ -502,8 +516,8 @@ const Dashboard = () => {
                       {clocking ? 'Clocking Out...' : 'Clock Out'}
                     </Button>
                   ) : (
-                    <Button variant="outlined" fullWidth disabled>
-                      Done for Today ✓
+                    <Button variant="outlined" fullWidth disabled sx={{ fontWeight: 600 }}>
+                      Shift Completed
                     </Button>
                   )}
                 </Box>
@@ -530,10 +544,24 @@ const Dashboard = () => {
             <Grid item xs={12} sm={6} md={4}>
               <Card sx={{ height: '100%', p: 3, borderRadius: 3, border: '1px solid #e2e8f0' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.secondary' }}>
+                  <Typography variant="caption" sx={{ fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11 }}>
                     LEAVE BALANCES
                   </Typography>
-                  <EventNoteIcon color="secondary" />
+                  <Box
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 2,
+                      backgroundColor: '#ecfeff',
+                      border: '1px solid #a5f3fc',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#0891b2',
+                    }}
+                  >
+                    <EventNoteIcon sx={{ fontSize: 22 }} />
+                  </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                   <Box sx={{ textAlign: 'center', flex: 1, p: 1, bgcolor: '#f8fafc', borderRadius: 2 }}>
@@ -568,7 +596,7 @@ const Dashboard = () => {
       <Card sx={{ p: 3, mt: 4, borderRadius: 3, border: '1px solid #e2e8f0' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Company Announcements & Notices 📢
+            Corporate Bulletins & Announcements
           </Typography>
           <Button size="small" endIcon={<ArrowForwardIcon />} onClick={() => navigate('/announcements')}>
             All Notices
