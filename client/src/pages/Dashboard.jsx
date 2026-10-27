@@ -34,53 +34,109 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosClient from '../api/axiosClient';
 
-const StatCard = ({ title, value, icon, color, subtitle, action }) => (
-  <Card sx={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-    <Box
+// Palette mapping for clean, professional, perfectly centered card icons
+const colorStyles = {
+  primary: {
+    bg: '#eef2ff',
+    iconColor: '#4f46e5',
+    border: '#c7d2fe',
+  },
+  secondary: {
+    bg: '#ecfeff',
+    iconColor: '#0891b2',
+    border: '#a5f3fc',
+  },
+  success: {
+    bg: '#ecfdf5',
+    iconColor: '#059669',
+    border: '#a7f3d0',
+  },
+  warning: {
+    bg: '#fffbeb',
+    iconColor: '#d97706',
+    border: '#fde68a',
+  },
+};
+
+const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) => {
+  const currentStyle = colorStyles[color] || colorStyles.primary;
+
+  return (
+    <Card
       sx={{
-        position: 'absolute',
-        top: -10,
-        right: -10,
-        width: 80,
-        height: 80,
-        borderRadius: '50%',
-        backgroundColor: `${color}.light`,
-        opacity: 0.15,
+        height: '100%',
+        p: 3,
+        borderRadius: 3,
+        border: '1px solid #e2e8f0',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        transition: 'transform 0.15s, box-shadow 0.15s',
+        '&:hover': {
+          boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+        },
       }}
-    />
-    <CardContent sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase' }}>
-          {title}
-        </Typography>
+    >
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+        <Box sx={{ pr: 1 }}>
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 800,
+              color: '#64748b',
+              textTransform: 'uppercase',
+              letterSpacing: 0.8,
+              fontSize: 11,
+              display: 'block',
+              mb: 0.8,
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 900,
+              color: '#0f172a',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {value}
+          </Typography>
+        </Box>
+
+        {/* Clean, perfectly centered icon badge */}
         <Box
           sx={{
-            width: 44,
-            height: 44,
-            borderRadius: 2,
-            backgroundColor: `${color}.main`,
+            width: 48,
+            height: 48,
+            minWidth: 48,
+            borderRadius: 2.5,
+            backgroundColor: currentStyle.bg,
+            border: `1px solid ${currentStyle.border}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#fff',
-            boxShadow: `0 4px 12px rgba(0,0,0,0.12)`,
+            color: currentStyle.iconColor,
           }}
         >
-          {icon}
+          {React.cloneElement(icon, { sx: { fontSize: 24, color: currentStyle.iconColor } })}
         </Box>
       </Box>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.5, color: '#0f172a' }}>
-        {value}
-      </Typography>
+
       {subtitle && (
-        <Typography variant="body2" sx={{ color: 'text.secondary', mb: action ? 1.5 : 0 }}>
+        <Typography variant="body2" sx={{ color: '#64748b', fontSize: 13 }}>
           {subtitle}
         </Typography>
       )}
-      {action && <Box sx={{ mt: 1 }}>{action}</Box>}
-    </CardContent>
-  </Card>
-);
+
+      {action && <Box sx={{ mt: 1.5 }}>{action}</Box>}
+    </Card>
+  );
+};
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -222,7 +278,7 @@ const Dashboard = () => {
           {/* Department Breakdown & Recent Leaves */}
           <Grid container spacing={3}>
             <Grid item xs={12} md={7}>
-              <Card sx={{ p: 3, height: '100%' }}>
+              <Card sx={{ p: 3, height: '100%', borderRadius: 3, border: '1px solid #e2e8f0' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     Recent Leave Applications
@@ -292,7 +348,7 @@ const Dashboard = () => {
 
             {/* Department Breakdown */}
             <Grid item xs={12} md={5}>
-              <Card sx={{ p: 3, height: '100%' }}>
+              <Card sx={{ p: 3, height: '100%', borderRadius: 3, border: '1px solid #e2e8f0' }}>
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
                   Department Distribution
                 </Typography>
@@ -307,6 +363,7 @@ const Dashboard = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        border: '1px solid #f1f5f9',
                       }}
                     >
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>{dept._id || 'Unassigned'}</Typography>
@@ -362,7 +419,7 @@ const Dashboard = () => {
             </Grid>
           </Grid>
 
-          <Card sx={{ p: 3 }}>
+          <Card sx={{ p: 3, borderRadius: 3, border: '1px solid #e2e8f0' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 Pending Team Leave Requests
@@ -420,7 +477,7 @@ const Dashboard = () => {
           <Grid container spacing={3} sx={{ mb: 4 }}>
             {/* Clock-In / Clock-Out Interactive Card */}
             <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', p: 3, border: '2px solid', borderColor: data.metrics.isClockedIn ? (data.metrics.isClockedOut ? '#e2e8f0' : 'success.main') : 'primary.light' }}>
+              <Card sx={{ height: '100%', p: 3, borderRadius: 3, border: '2px solid', borderColor: data.metrics.isClockedIn ? (data.metrics.isClockedOut ? '#e2e8f0' : 'success.main') : 'primary.light' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.secondary' }}>
                     TODAY'S ATTENDANCE
@@ -471,7 +528,7 @@ const Dashboard = () => {
 
             {/* Leave Balance Overview */}
             <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{ height: '100%', p: 3 }}>
+              <Card sx={{ height: '100%', p: 3, borderRadius: 3, border: '1px solid #e2e8f0' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.secondary' }}>
                     LEAVE BALANCES
@@ -508,7 +565,7 @@ const Dashboard = () => {
       )}
 
       {/* Announcements Noticeboard (Visible across all roles) */}
-      <Card sx={{ p: 3, mt: 4 }}>
+      <Card sx={{ p: 3, mt: 4, borderRadius: 3, border: '1px solid #e2e8f0' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Company Announcements & Notices 📢
