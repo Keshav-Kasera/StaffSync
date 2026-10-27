@@ -9,23 +9,23 @@
 
 ---
 
-## 🌟 Key Features by User Persona
+## Key Features by User Persona
 
-### 👔 1. HR Personnel (Administrative Control)
+### 1. HR Personnel (Administrative Control)
 * **Staff Directory Management**: Add, view, filter, and deactivate employee accounts across departments.
 * **Workforce Analytics**: Live metrics on attendance rates, total headcount, manager count, and department distributions.
 * **Leave Oversight**: Full visibility into organizational leave applications with historical decision logging.
 * **Corporate Announcements**: Broadcast company-wide notices with category tags, urgency badges, and auto-generated user notifications.
 * **Attendance Auditing**: Organization-wide attendance log with status filtering (`Present`, `Late`, `Half-day`).
 
-### 💼 2. Department Managers (Team Oversight)
+### 2. Department Managers (Team Oversight)
 * **Team Supervision**: Real-time visibility into direct reports and team size.
 * **Leave Decision Workflow**: Review, approve, or reject team leave applications with custom feedback comments.
 * **Team Attendance**: Monitor daily check-in and checkout times for all department members.
 * **Performance Reviews**: Record 1-5 star performance ratings and constructive feedback for team members.
 * **Training Coordination**: Create and assign upskilling programs to team members.
 
-### 💻 3. Employees (Self-Service Portal)
+### 3. Employees (Self-Service Portal)
 * **One-Click Attendance**: Daily clock-in and clock-out with automatic hour calculation and late detection.
 * **Leave Management**: Apply for Casual, Sick, or Earned leaves with live balance tracking and real-time approval status.
 * **Training & Upskilling**: View assigned courses, track progress percentages, and mark certifications as complete.
@@ -34,21 +34,21 @@
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Architecture
 
 | Layer | Technologies Used |
 | :--- | :--- |
 | **Frontend** | React 18, Material UI (MUI v6), React Router v6, Axios, Emotion |
 | **Backend** | Node.js (v24), Express.js, CORS, Morgan |
-| **Database** | MongoDB Atlas (Cloud NoSQL), Mongoose ODM |
+| **Database** | MongoDB Atlas (Cloud Clustered NoSQL), Mongoose ODM |
 | **Security** | JSON Web Tokens (JWT), bcryptjs password hashing, Role-Based Access Control (RBAC) middleware |
 | **Optimization** | Route code-splitting (React Lazy/Suspense), Database indexing, Server-side pagination |
 
 ---
 
-## 🗄️ Database Architecture (8 Collections)
+## Database Architecture (8 Strict Schemas)
 
-StaffSync strictly implements the 8 collections mandated by the specification:
+StaffSync strictly implements the 8 collections mandated by enterprise HR specifications:
 1. **`Users`**: Authentication credentials, hashed passwords, roles (`employee`, `manager`, `hr`), and account status.
 2. **`Employees`**: Profile details, employee IDs, department, designation, and leave balances.
 3. **`Managers`**: Management profiles, department oversight, and team member mapping.
@@ -60,7 +60,7 @@ StaffSync strictly implements the 8 collections mandated by the specification:
 
 ---
 
-## 🚀 Quick Start Guide (Local Setup)
+## Quick Start Guide (Local Setup)
 
 ### Prerequisites
 * [Node.js](https://nodejs.org/) (v16 or higher)
@@ -118,29 +118,29 @@ npm run dev
 
 ---
 
-## 🔑 Default Demo Accounts
+## Evaluation Test Accounts
 
-For quick evaluation, the following pre-configured accounts are available after seeding:
+For academic and assessment evaluation, the following pre-configured operational accounts are seeded:
 
-| Role | Email Address | Password |
-| :--- | :--- | :--- |
-| **HR Director** | `hr@staffsync.com` | `Password123!` |
-| **Engineering Manager** | `manager@staffsync.com` | `Password123!` |
-| **Employee (Alex)** | `employee@staffsync.com` | `Password123!` |
-| **Employee (Sarah)** | `sarah.chen@staffsync.com` | `Password123!` |
+| Role | Email Address | Password | Permissions Scope |
+| :--- | :--- | :--- | :--- |
+| **HR Director** | `hr@staffsync.com` | `Password123!` | System-wide administrative control, employee directory, full leave approvals, broadcasts |
+| **Department Manager** | `manager@staffsync.com` | `Password123!` | Team roster oversight, team attendance tracking, leave approval workflow, trainings |
+| **Employee (Alex)** | `employee@staffsync.com` | `Password123!` | Self-service clock in/out, leave applications, training tracking, noticeboard |
+| **Employee (Sarah)** | `sarah.chen@staffsync.com` | `Password123!` | Direct report to Engineering Manager, secondary test employee |
 
-*(One-click demo buttons are also provided directly on the login screen for rapid evaluator testing).*
-
----
-
-## 🔒 Security Best Practices Implemented
-
-* **Protected API Endpoints**: All private routes verify JWT Bearer tokens before execution.
-* **Role-Based Guards**: Non-admin users attempting to access HR or managerial endpoints receive HTTP 403 Forbidden.
-* **Password Hashing**: User passwords are encrypted with `bcryptjs` using a 10-round salt before being stored.
-* **Environment Isolation**: No credentials, database strings, or JWT secrets are hardcoded in the codebase.
+*(An **Academic Testing / Autofill Profiles** drawer is also integrated into the `/login` portal for one-click evaluator access).*
 
 ---
 
-## 📄 License
+## Security Architecture & Best Practices
+
+* **Cryptographic Token Verification**: All private REST endpoints verify JWT Bearer tokens before request handling.
+* **Granular Role-Based Access Control**: Strict role checking middleware returns HTTP 403 Forbidden for unauthorized access attempts.
+* **Salted Password Hashing**: Passwords undergo 10-round salted bcrypt hashing before storage.
+* **Strict Secret Isolation**: No database strings or private tokens are hardcoded; all configuration is driven by isolated environment variables.
+
+---
+
+## License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
