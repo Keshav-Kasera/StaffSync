@@ -20,26 +20,25 @@ import {
   MenuItem,
   Tabs,
   Tab,
-  CircularProgress,
   Alert,
-  IconButton,
-  Tooltip,
+  Skeleton,
 } from '@mui/material';
 import {
   Add as AddIcon,
-  Check as ApproveIcon,
-  Close as RejectIcon,
   EventNote as EventNoteIcon,
   PendingActions as PendingIcon,
   CalendarMonth as CalendarIcon,
   Download as DownloadIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
 import { exportToCsv } from '../utils/exportCsv';
+import EmptyState from '../components/EmptyState';
 
 const Leaves = () => {
   const { user } = useAuth();
+  const toast = useToast();
 
   const [tabIndex, setTabIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -128,6 +127,7 @@ const Leaves = () => {
       if (res.data.success) {
         setOpenApplyModal(false);
         setApplyData({ leaveType: 'Casual', startDate: '', endDate: '', reason: '' });
+        toast.success('Leave application submitted successfully');
         fetchMyLeaves();
       }
     } catch (err) {
@@ -148,10 +148,11 @@ const Leaves = () => {
       setOpenReviewModal(false);
       setSelectedLeave(null);
       setReviewComment('');
+      toast.success(`Leave request ${reviewAction.toLowerCase()}ed`);
       fetchPendingLeaves();
       if (user?.role === 'hr') fetchAllLeaves();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update leave status');
+      toast.error(err.response?.data?.message || 'Failed to update leave status');
     } finally {
       setSubmitting(false);
     }
@@ -297,9 +298,26 @@ const Leaves = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {myLeaves.length === 0 ? (
+                {loading ? (
+                  [1, 2, 3, 4].map((idx) => (
+                    <TableRow key={idx}>
+                      <TableCell><Skeleton width={80} /></TableCell>
+                      <TableCell><Skeleton width={140} /></TableCell>
+                      <TableCell><Skeleton width={60} /></TableCell>
+                      <TableCell><Skeleton width={180} /></TableCell>
+                      <TableCell><Skeleton width={70} /></TableCell>
+                      <TableCell><Skeleton width={90} /></TableCell>
+                    </TableRow>
+                  ))
+                ) : myLeaves.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">You have not submitted any leave requests yet</TableCell>
+                    <TableCell colSpan={6} sx={{ p: 0 }}>
+                      <EmptyState
+                        icon={<EventNoteIcon sx={{ fontSize: 26 }} />}
+                        title="No leave applications yet"
+                        description="You have not submitted any time-off requests. Click 'Apply for Leave' to request time off."
+                      />
+                    </TableCell>
                   </TableRow>
                 ) : (
                   myLeaves.map((l) => (
@@ -349,8 +367,12 @@ const Leaves = () => {
               <TableBody>
                 {pendingLeaves.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} align="center" sx={{ color: 'text.secondary', py: 3 }}>
-                      No pending leave applications requiring review
+                    <TableCell colSpan={7} sx={{ p: 0 }}>
+                      <EmptyState
+                        icon={<PendingIcon sx={{ fontSize: 26 }} />}
+                        title="No pending requests"
+                        description="All leave applications in your department have been reviewed and decided."
+                      />
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -424,7 +446,13 @@ const Leaves = () => {
               <TableBody>
                 {allLeaves.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} align="center">No leave records</TableCell>
+                    <TableCell colSpan={7} sx={{ p: 0 }}>
+                      <EmptyState
+                        icon={<CalendarIcon sx={{ fontSize: 26 }} />}
+                        title="No organization leaves found"
+                        description="There are currently no company-wide leave requests recorded."
+                      />
+                    </TableCell>
                   </TableRow>
                 ) : (
                   allLeaves.map((l) => (
@@ -462,8 +490,8 @@ const Leaves = () => {
           )}
           <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
             <Box>
-              <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
-                LEAVE CATEGORY
+              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                Leave Category
               </Typography>
               <TextField
                 select
@@ -482,8 +510,8 @@ const Leaves = () => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
-                  START DATE
+                <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                  Start Date
                 </Typography>
                 <TextField
                   fullWidth
@@ -494,8 +522,8 @@ const Leaves = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
-                  END DATE
+                <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                  End Date
                 </Typography>
                 <TextField
                   fullWidth
@@ -508,8 +536,8 @@ const Leaves = () => {
             </Grid>
 
             <Box>
-              <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', display: 'block', mb: 0.8 }}>
-                REASON FOR LEAVE
+              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary', display: 'block', mb: 0.8 }}>
+                Reason for Leave
               </Typography>
               <TextField
                 fullWidth

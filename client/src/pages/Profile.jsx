@@ -17,23 +17,21 @@ import {
   Save as SaveIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
 
 const Profile = () => {
   const { user, refreshUser } = useAuth();
+  const toast = useToast();
 
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.employeeProfile?.phone || '');
   const [address, setAddress] = useState(user?.employeeProfile?.address || '');
   const [skills, setSkills] = useState(user?.employeeProfile?.skills?.join(', ') || '');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
     setSaving(true);
 
     try {
@@ -45,11 +43,11 @@ const Profile = () => {
         skills: skillsArray,
       });
       if (res.data.success) {
-        setMessage('Profile updated successfully!');
+        toast.success('Profile details updated successfully');
         await refreshUser();
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update profile');
+      toast.error(err.response?.data?.message || 'Failed to update profile');
     } finally {
       setSaving(false);
     }
@@ -65,9 +63,6 @@ const Profile = () => {
           Manage your personal information, contact methods, and account security.
         </Typography>
       </Box>
-
-      {message && <Alert severity="success" sx={{ mb: 3 }}>{message}</Alert>}
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
       <Grid container spacing={3}>
         {/* User Summary Card */}

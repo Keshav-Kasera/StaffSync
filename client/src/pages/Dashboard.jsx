@@ -12,10 +12,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  CircularProgress,
   Alert,
   IconButton,
   Tooltip,
+  Skeleton,
 } from '@mui/material';
 import {
   People as PeopleIcon,
@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
 
 // Palette mapping for Obsidian Technical Grid
@@ -141,6 +142,7 @@ const StatCard = ({ title, value, icon, color = 'primary', subtitle, action }) =
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -169,9 +171,10 @@ const Dashboard = () => {
     try {
       setClocking(true);
       await axiosClient.post('/attendance/clock-in');
+      toast.success('Successfully clocked in for today');
       fetchDashboardData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Clock-in failed');
+      toast.error(err.response?.data?.message || 'Clock-in failed');
     } finally {
       setClocking(false);
     }
@@ -181,9 +184,10 @@ const Dashboard = () => {
     try {
       setClocking(true);
       await axiosClient.post('/attendance/clock-out');
+      toast.success('Successfully clocked out. Have a great evening!');
       fetchDashboardData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Clock-out failed');
+      toast.error(err.response?.data?.message || 'Clock-out failed');
     } finally {
       setClocking(false);
     }
@@ -192,16 +196,28 @@ const Dashboard = () => {
   const handleLeaveDecision = async (leaveId, status) => {
     try {
       await axiosClient.put(`/leaves/${leaveId}/status`, { status, reviewComment: `Quick ${status.toLowerCase()} from dashboard` });
+      toast.success(`Leave request ${status.toLowerCase()}ed`);
       fetchDashboardData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Action failed');
+      toast.error(err.response?.data?.message || 'Action failed');
     }
   };
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-        <CircularProgress color="primary" />
+      <Box sx={{ py: 2 }}>
+        <Box sx={{ mb: 4 }}>
+          <Skeleton variant="text" width={280} height={42} sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)' }} />
+          <Skeleton variant="text" width={380} height={24} sx={{ bgcolor: 'rgba(255, 255, 255, 0.03)' }} />
+        </Box>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {[1, 2, 3, 4].map((i) => (
+            <Grid item xs={12} sm={6} md={3} key={i}>
+              <Skeleton variant="rounded" height={130} sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }} />
+            </Grid>
+          ))}
+        </Grid>
+        <Skeleton variant="rounded" height={280} sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }} />
       </Box>
     );
   }
@@ -214,6 +230,8 @@ const Dashboard = () => {
     );
   }
 
+  const roleName = user?.role === 'hr' ? 'HR Administrator' : user?.role === 'manager' ? 'Department Manager' : 'Employee';
+
   return (
     <Box>
       {/* Welcome Header */}
@@ -223,14 +241,15 @@ const Dashboard = () => {
             Welcome back, {user?.name}
           </Typography>
           <Typography variant="body1" sx={{ color: '#8b949e', mt: 0.5 }}>
-            Operational workforce telemetry and governance ledger.
+            Here is your daily organization overview and workspace activity.
           </Typography>
         </Box>
         <Chip
-          label={`ROLE: ${user?.role?.toUpperCase()}`}
+          label={roleName}
           sx={{
             fontWeight: 700,
-            px: 1,
+            px: 1.2,
+            py: 0.5,
             bgcolor: user?.role === 'hr' ? 'rgba(16, 185, 129, 0.12)' : user?.role === 'manager' ? 'rgba(56, 189, 248, 0.12)' : 'rgba(167, 139, 250, 0.12)',
             color: user?.role === 'hr' ? '#10b981' : user?.role === 'manager' ? '#38bdf8' : '#a78bfa',
             border: '1px solid currentColor',

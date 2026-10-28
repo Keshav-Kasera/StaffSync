@@ -30,11 +30,11 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
   const menuItems = [
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '01' },
     { text: 'Attendance', path: '/attendance', icon: <AttendanceIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '02' },
-    { text: 'Leave Engine', path: '/leaves', icon: <LeavesIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '03' },
-    { text: 'Directory', path: '/employees', icon: <EmployeesIcon sx={{ fontSize: 18 }} />, roles: ['manager', 'hr'], key: '04' },
-    { text: 'Bulletins', path: '/announcements', icon: <AnnouncementsIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '05' },
-    { text: 'Upskilling', path: '/training', icon: <TrainingIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '06' },
-    { text: 'Settings', path: '/profile', icon: <ProfileIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '07' },
+    { text: 'Leave Management', path: '/leaves', icon: <LeavesIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '03' },
+    { text: 'Employee Directory', path: '/employees', icon: <EmployeesIcon sx={{ fontSize: 18 }} />, roles: ['manager', 'hr'], key: '04' },
+    { text: 'Announcements', path: '/announcements', icon: <AnnouncementsIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '05' },
+    { text: 'Training & Skills', path: '/training', icon: <TrainingIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '06' },
+    { text: 'My Profile', path: '/profile', icon: <ProfileIcon sx={{ fontSize: 18 }} />, roles: ['employee', 'manager', 'hr'], key: '07' },
   ];
 
   const visibleItems = menuItems.filter((item) =>
@@ -49,12 +49,11 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
           sx={{
             color: '#6e7681',
             fontWeight: 700,
-            letterSpacing: '0.08em',
+            letterSpacing: '0.06em',
             fontSize: 10,
-            fontFamily: '"JetBrains Mono", monospace',
           }}
         >
-          NAVIGATION_V1
+          WORKSPACE MENU
         </Typography>
       </Box>
 
@@ -127,11 +126,11 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
           <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#10b981' }} />
           <Typography variant="caption" sx={{ color: '#10b981', fontWeight: 700, fontSize: 10 }}>
-            NODE_ONLINE
+            System Operational
           </Typography>
         </Box>
         <Typography variant="caption" sx={{ color: '#6e7681', fontSize: 10, display: 'block' }}>
-          Atlas M0 Cluster • RBAC Active
+          StaffSync v1.0 • Connected
         </Typography>
       </Box>
     </Box>

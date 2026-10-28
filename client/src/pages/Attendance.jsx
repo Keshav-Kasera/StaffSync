@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Card,
-  CardContent,
   Grid,
   Button,
   Chip,
@@ -13,14 +12,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Tabs,
   Tab,
-  CircularProgress,
-  Alert,
   Pagination,
   TextField,
   MenuItem,
+  Skeleton,
 } from '@mui/material';
 import {
   AccessTime as ClockIcon,
@@ -28,13 +25,17 @@ import {
   Warning as LateIcon,
   History as HistoryIcon,
   Download as DownloadIcon,
+  Group as TeamIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
 import { exportToCsv } from '../utils/exportCsv';
+import EmptyState from '../components/EmptyState';
 
 const Attendance = () => {
   const { user } = useAuth();
+  const toast = useToast();
 
   const [tabIndex, setTabIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -126,10 +127,11 @@ const Attendance = () => {
     try {
       setActionLoading(true);
       await axiosClient.post('/attendance/clock-in');
+      toast.success('Successfully clocked in for today');
       await fetchToday();
       fetchMyHistory(1);
     } catch (err) {
-      alert(err.response?.data?.message || 'Clock-in failed');
+      toast.error(err.response?.data?.message || 'Clock-in failed');
     } finally {
       setActionLoading(false);
     }
@@ -139,10 +141,11 @@ const Attendance = () => {
     try {
       setActionLoading(true);
       await axiosClient.post('/attendance/clock-out');
+      toast.success('Successfully clocked out. Have a great evening!');
       await fetchToday();
       fetchMyHistory(1);
     } catch (err) {
-      alert(err.response?.data?.message || 'Clock-out failed');
+      toast.error(err.response?.data?.message || 'Clock-out failed');
     } finally {
       setActionLoading(false);
     }
@@ -319,9 +322,25 @@ const Attendance = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {myHistory.length === 0 ? (
+                {loading ? (
+                  [1, 2, 3, 4].map((idx) => (
+                    <TableRow key={idx}>
+                      <TableCell><Skeleton width={90} /></TableCell>
+                      <TableCell><Skeleton width={80} /></TableCell>
+                      <TableCell><Skeleton width={80} /></TableCell>
+                      <TableCell><Skeleton width={70} /></TableCell>
+                      <TableCell><Skeleton width={80} /></TableCell>
+                    </TableRow>
+                  ))
+                ) : myHistory.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} align="center">No attendance records found</TableCell>
+                    <TableCell colSpan={5} sx={{ p: 0 }}>
+                      <EmptyState
+                        icon={<HistoryIcon sx={{ fontSize: 26 }} />}
+                        title="No attendance records found"
+                        description="You have not clocked in yet. Use the Clock In button above to start your shift."
+                      />
+                    </TableCell>
                   </TableRow>
                 ) : (
                   myHistory.map((rec) => (
@@ -387,7 +406,13 @@ const Attendance = () => {
               <TableBody>
                 {teamRecords.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">No team attendance records found</TableCell>
+                    <TableCell colSpan={6} sx={{ p: 0 }}>
+                      <EmptyState
+                        icon={<TeamIcon sx={{ fontSize: 26 }} />}
+                        title="No team records found"
+                        description="There are currently no attendance entries recorded for your team members."
+                      />
+                    </TableCell>
                   </TableRow>
                 ) : (
                   teamRecords.map((rec) => (
@@ -459,7 +484,13 @@ const Attendance = () => {
               <TableBody>
                 {allRecords.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">No records match the filter</TableCell>
+                    <TableCell colSpan={6} sx={{ p: 0 }}>
+                      <EmptyState
+                        icon={<HistoryIcon sx={{ fontSize: 26 }} />}
+                        title="No attendance records match"
+                        description="There are no company attendance logs matching the selected status filter."
+                      />
+                    </TableCell>
                   </TableRow>
                 ) : (
                   allRecords.map((rec) => (

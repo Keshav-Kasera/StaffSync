@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import CommandPalette from './CommandPalette';
@@ -8,6 +8,7 @@ import CommandPalette from './CommandPalette';
 const Layout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -38,7 +39,9 @@ const Layout = () => {
           }}
         >
           <Container maxWidth="xl" sx={{ p: 0 }}>
-            <Outlet />
+            <Box key={location.pathname} className="page-enter">
+              <Outlet />
+            </Box>
           </Container>
         </Box>
       </Box>

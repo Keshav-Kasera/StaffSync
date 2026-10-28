@@ -38,10 +38,11 @@
 
 | Layer | Technologies Used |
 | :--- | :--- |
-| **Frontend** | React 18, Material UI (MUI v6), React Router v6, Axios, Emotion |
+| **Frontend** | React 19, Material UI (MUI v9), React Router v7, Axios, Emotion, Vite 8 |
 | **Backend** | Node.js (v24), Express.js, CORS, Morgan |
 | **Database** | MongoDB Atlas (Cloud Clustered NoSQL), Mongoose ODM |
 | **Security** | JSON Web Tokens (JWT), bcryptjs password hashing, Role-Based Access Control (RBAC) middleware |
+| **UI / UX Polish** | Global Toast/Snackbar notifications, Command Menu (Ctrl+K), Skeletons, Custom SVG Favicon, Page-enter transitions |
 | **Optimization** | Route code-splitting (React Lazy/Suspense), Database indexing, Server-side pagination |
 
 ---
@@ -118,9 +119,9 @@ npm run dev
 
 ---
 
-## Evaluation Test Accounts
-
-For academic and assessment evaluation, the following pre-configured operational accounts are seeded:
+## Evaluation Demo Accounts
+ 
+For quick assessment and testing, the following pre-configured operational accounts are seeded:
 
 | Role | Email Address | Password | Permissions Scope |
 | :--- | :--- | :--- | :--- |
@@ -129,7 +130,7 @@ For academic and assessment evaluation, the following pre-configured operational
 | **Employee (Alex)** | `employee@staffsync.com` | `Password123!` | Self-service clock in/out, leave applications, training tracking, noticeboard |
 | **Employee (Sarah)** | `sarah.chen@staffsync.com` | `Password123!` | Direct report to Engineering Manager, secondary test employee |
 
-*(An **Academic Testing / Autofill Profiles** drawer is also integrated into the `/login` portal for one-click evaluator access).*
+*(A **Quick 1-Click Demo Logins** panel is integrated directly into the `/login` portal and the `Ctrl+K` Command Palette for instantaneous evaluator testing).*
 
 ---
 

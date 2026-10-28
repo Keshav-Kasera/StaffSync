@@ -22,19 +22,23 @@ import {
   Tooltip,
   Rating,
   Pagination,
+  Skeleton,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Search as SearchIcon,
   Star as StarIcon,
-  Edit as EditIcon,
   Block as DeactivateIcon,
+  People as PeopleIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
+import EmptyState from '../components/EmptyState';
 
 const Employees = () => {
   const { user } = useAuth();
+  const toast = useToast();
 
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +56,7 @@ const Employees = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: 'Password123!',
+    password: '',
     department: 'Engineering',
     designation: 'Associate Software Engineer',
     phone: '',
@@ -91,21 +95,26 @@ const Employees = () => {
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.password) {
+      toast.warning('Please provide a temporary password for the employee account');
+      return;
+    }
     try {
       await axiosClient.post('/employees', formData);
       setOpenAddModal(false);
       setFormData({
         name: '',
         email: '',
-        password: 'Password123!',
+        password: '',
         department: 'Engineering',
         designation: 'Associate Software Engineer',
         phone: '',
         address: '',
       });
+      toast.success('Employee account created successfully');
       fetchEmployees(1, search, department);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to add employee');
+      toast.error(err.response?.data?.message || 'Failed to add employee');
     }
   };
 
@@ -117,9 +126,10 @@ const Employees = () => {
         performanceNotes: perfNotes,
       });
       setOpenPerfModal(false);
+      toast.success('Performance review recorded');
       fetchEmployees(page, search, department);
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update performance');
+      toast.error(err.response?.data?.message || 'Failed to update performance');
     }
   };
 
@@ -127,9 +137,10 @@ const Employees = () => {
     if (window.confirm('Are you sure you want to deactivate this employee account?')) {
       try {
         await axiosClient.delete(`/employees/${empId}`);
+        toast.info('Employee account deactivated');
         fetchEmployees(page, search, department);
       } catch (err) {
-        alert(err.response?.data?.message || 'Deactivation failed');
+        toast.error(err.response?.data?.message || 'Deactivation failed');
       }
     }
   };
@@ -212,9 +223,27 @@ const Employees = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {employees.length === 0 ? (
+              {loading ? (
+                [1, 2, 3, 4, 5].map((idx) => (
+                  <TableRow key={idx}>
+                    <TableCell><Skeleton width={80} /></TableCell>
+                    <TableCell><Skeleton width={140} /><Skeleton width={100} height={12} /></TableCell>
+                    <TableCell><Skeleton width={100} /></TableCell>
+                    <TableCell><Skeleton width={120} /></TableCell>
+                    <TableCell><Skeleton width={90} /></TableCell>
+                    <TableCell><Skeleton width={60} /></TableCell>
+                    <TableCell align="right"><Skeleton width={80} sx={{ ml: 'auto' }} /></TableCell>
+                  </TableRow>
+                ))
+              ) : employees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} align="center">No employees found matching criteria</TableCell>
+                  <TableCell colSpan={7} sx={{ p: 0 }}>
+                    <EmptyState
+                      icon={<PeopleIcon sx={{ fontSize: 26 }} />}
+                      title="No employees found"
+                      description="No personnel records match your current search and department filters."
+                    />
+                  </TableCell>
                 </TableRow>
               ) : (
                 employees.map((emp) => (
@@ -304,6 +333,16 @@ const Employees = () => {
               label="Work Email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+            <TextField
+              required
+              fullWidth
+              type="password"
+              label="Temporary Password"
+              placeholder="e.g. EmployeeTemp123!"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              helperText="Employee can change this after signing in"
             />
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>

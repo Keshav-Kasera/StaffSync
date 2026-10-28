@@ -2,10 +2,14 @@
  * Utility to generate and download client-side CSV files
  * Demonstrates real data-handling engineering depth
  */
-export const exportToCsv = (filename, headers, rows) => {
+export const exportToCsv = (filename, headers, rows, onError) => {
   if (!rows || !rows.length) {
-    alert('No data available to export');
-    return;
+    if (typeof onError === 'function') {
+      onError('No data available to export');
+    } else {
+      console.warn('exportToCsv: No data available to export');
+    }
+    return false;
   }
 
   const csvRows = [];

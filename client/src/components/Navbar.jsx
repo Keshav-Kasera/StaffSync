@@ -68,11 +68,11 @@ const Navbar = ({ onMobileToggle, onOpenCommandPalette }) => {
   const getRoleStyle = (role) => {
     switch (role) {
       case 'hr':
-        return { label: 'HR_ADMIN', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' };
+        return { label: 'HR Admin', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' };
       case 'manager':
-        return { label: 'MANAGER', color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.1)' };
+        return { label: 'Manager', color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.1)' };
       default:
-        return { label: 'EMPLOYEE', color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' };
+        return { label: 'Employee', color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' };
     }
   };
 

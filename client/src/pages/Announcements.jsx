@@ -16,6 +16,7 @@ import {
   Checkbox,
   IconButton,
   Tooltip,
+  Skeleton,
 } from '@mui/material';
 import {
   Campaign as CampaignIcon,
@@ -24,10 +25,13 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
+import EmptyState from '../components/EmptyState';
 
 const Announcements = () => {
   const { user } = useAuth();
+  const toast = useToast();
 
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,6 +66,7 @@ const Announcements = () => {
     e.preventDefault();
     try {
       await axiosClient.post('/announcements', formData);
+      toast.success('Announcement published successfully');
       setOpenModal(false);
       setFormData({
         title: '',
@@ -72,7 +77,7 @@ const Announcements = () => {
       });
       fetchAnnouncements();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to post announcement');
+      toast.error(err.response?.data?.message || 'Failed to post announcement');
     }
   };
 
@@ -80,9 +85,10 @@ const Announcements = () => {
     if (window.confirm('Are you sure you want to delete this announcement?')) {
       try {
         await axiosClient.delete(`/announcements/${id}`);
+        toast.info('Announcement removed');
         fetchAnnouncements();
       } catch (err) {
-        alert(err.response?.data?.message || 'Failed to delete announcement');
+        toast.error(err.response?.data?.message || 'Failed to delete announcement');
       }
     }
   };
@@ -113,13 +119,28 @@ const Announcements = () => {
 
       {/* Grid of Announcements */}
       <Grid container spacing={3}>
-        {announcements.length === 0 ? (
+        {loading ? (
+          [1, 2, 3, 4].map((idx) => (
+            <Grid item xs={12} md={6} key={idx}>
+              <Card sx={{ p: 3, height: 180, bgcolor: '#0f1115' }}>
+                <Skeleton variant="text" width="60%" height={32} sx={{ mb: 1.5 }} />
+                <Skeleton variant="text" width="90%" height={20} />
+                <Skeleton variant="text" width="80%" height={20} />
+                <Box sx={{ mt: 3, display: 'flex', gap: 1 }}>
+                  <Skeleton variant="rounded" width={80} height={24} />
+                  <Skeleton variant="rounded" width={80} height={24} />
+                </Box>
+              </Card>
+            </Grid>
+          ))
+        ) : announcements.length === 0 ? (
           <Grid item xs={12}>
-            <Card sx={{ p: 6, textAlign: 'center', bgcolor: '#0f1115' }}>
-              <CampaignIcon sx={{ fontSize: 48, color: '#6e7681', mb: 1 }} />
-              <Typography variant="h6" sx={{ color: '#8b949e' }}>
-                No active announcements at this time
-              </Typography>
+            <Card sx={{ p: 2, bgcolor: '#0f1115' }}>
+              <EmptyState
+                icon={<CampaignIcon sx={{ fontSize: 28 }} />}
+                title="No announcements published yet"
+                description="Check back later for company updates, internal memos, and team news."
+              />
             </Card>
           </Grid>
         ) : (

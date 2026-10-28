@@ -24,10 +24,12 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const CommandPalette = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { user, login } = useAuth();
+  const toast = useToast();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -50,7 +52,7 @@ const CommandPalette = ({ open, onClose }) => {
     },
     {
       id: 'leave',
-      title: 'Apply for Leave / Review Applications',
+      title: 'Leave Management & Time-Off Requests',
       category: 'Leave Management',
       icon: <LeavesIcon sx={{ fontSize: 18 }} />,
       perform: () => navigate('/leaves'),
@@ -58,7 +60,7 @@ const CommandPalette = ({ open, onClose }) => {
     },
     {
       id: 'emp',
-      title: 'Browse Employee Directory & Performance',
+      title: 'Employee Directory & Team Management',
       category: 'Personnel',
       icon: <EmployeesIcon sx={{ fontSize: 18 }} />,
       perform: () => navigate('/employees'),
@@ -66,7 +68,7 @@ const CommandPalette = ({ open, onClose }) => {
     },
     {
       id: 'notice',
-      title: 'View Corporate Bulletins & Notices',
+      title: 'Company Announcements & Updates',
       category: 'Communications',
       icon: <AnnouncementsIcon sx={{ fontSize: 18 }} />,
       perform: () => navigate('/announcements'),
@@ -74,7 +76,7 @@ const CommandPalette = ({ open, onClose }) => {
     },
     {
       id: 'train',
-      title: 'Training Modules & Upskilling Progress',
+      title: 'Training Modules & Skill Development',
       category: 'Development',
       icon: <TrainingIcon sx={{ fontSize: 18 }} />,
       perform: () => navigate('/training'),
@@ -82,24 +84,25 @@ const CommandPalette = ({ open, onClose }) => {
     },
     {
       id: 'prof',
-      title: 'Account Settings & Security Profile',
+      title: 'User Profile & Account Settings',
       category: 'Account',
       icon: <ProfileIcon sx={{ fontSize: 18 }} />,
       perform: () => navigate('/profile'),
       shortcut: 'G P',
     },
-    // Evaluator Quick-Switches
+    // Demo Role Switchers
     {
       id: 'auth-hr',
       title: 'Switch Role → HR Administrator (hr@staffsync.com)',
-      category: 'Evaluator Switcher',
+      category: 'Demo Role Switcher',
       icon: <KeyIcon sx={{ fontSize: 18, color: '#10b981' }} />,
       perform: async () => {
         try {
           await login('hr@staffsync.com', 'Password123!');
+          toast.success('Switched to HR Administrator account');
           navigate('/dashboard');
         } catch (e) {
-          console.error(e);
+          toast.error('Failed to switch to HR account');
         }
       },
       shortcut: 'HR',
@@ -107,14 +110,15 @@ const CommandPalette = ({ open, onClose }) => {
     {
       id: 'auth-mgr',
       title: 'Switch Role → Department Manager (manager@staffsync.com)',
-      category: 'Evaluator Switcher',
+      category: 'Demo Role Switcher',
       icon: <KeyIcon sx={{ fontSize: 18, color: '#38bdf8' }} />,
       perform: async () => {
         try {
           await login('manager@staffsync.com', 'Password123!');
+          toast.success('Switched to Department Manager account');
           navigate('/dashboard');
         } catch (e) {
-          console.error(e);
+          toast.error('Failed to switch to Manager account');
         }
       },
       shortcut: 'MGR',
@@ -122,14 +126,15 @@ const CommandPalette = ({ open, onClose }) => {
     {
       id: 'auth-emp',
       title: 'Switch Role → Employee Alex (employee@staffsync.com)',
-      category: 'Evaluator Switcher',
+      category: 'Demo Role Switcher',
       icon: <KeyIcon sx={{ fontSize: 18, color: '#f59e0b' }} />,
       perform: async () => {
         try {
           await login('employee@staffsync.com', 'Password123!');
+          toast.success('Switched to Employee account');
           navigate('/dashboard');
         } catch (e) {
-          console.error(e);
+          toast.error('Failed to switch to Employee account');
         }
       },
       shortcut: 'EMP',

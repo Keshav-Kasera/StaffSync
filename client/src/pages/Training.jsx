@@ -13,6 +13,7 @@ import {
   DialogActions,
   TextField,
   Slider,
+  Skeleton,
 } from '@mui/material';
 import {
   School as SchoolIcon,
@@ -21,10 +22,13 @@ import {
   Schedule as DurationIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axiosClient from '../api/axiosClient';
+import EmptyState from '../components/EmptyState';
 
 const Training = () => {
   const { user } = useAuth();
+  const toast = useToast();
 
   const [trainings, setTrainings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -71,9 +75,10 @@ const Training = () => {
         duration: '3 Weeks',
         materialsUrl: '',
       });
+      toast.success('Training module created successfully');
       fetchTrainings();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create training');
+      toast.error(err.response?.data?.message || 'Failed to create training');
     }
   };
 
@@ -85,9 +90,10 @@ const Training = () => {
         status: currentProgress === 100 ? 'Completed' : 'In Progress',
       });
       setOpenProgressModal(false);
+      toast.success('Course progress updated');
       fetchTrainings();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update progress');
+      toast.error(err.response?.data?.message || 'Failed to update progress');
     }
   };
 
@@ -126,13 +132,31 @@ const Training = () => {
 
       {/* Grid of Programs */}
       <Grid container spacing={3}>
-        {trainings.length === 0 ? (
+        {loading ? (
+          [1, 2, 3, 4].map((idx) => (
+            <Grid item xs={12} md={6} key={idx}>
+              <Card sx={{ p: 3, height: 220, bgcolor: '#0f1115' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Skeleton variant="rounded" width={110} height={24} />
+                  <Skeleton variant="rounded" width={80} height={24} />
+                </Box>
+                <Skeleton variant="text" width="70%" height={32} sx={{ mb: 1 }} />
+                <Skeleton variant="text" width="95%" height={20} />
+                <Skeleton variant="text" width="85%" height={20} />
+                <Box sx={{ mt: 3 }}>
+                  <Skeleton variant="rounded" height={8} />
+                </Box>
+              </Card>
+            </Grid>
+          ))
+        ) : trainings.length === 0 ? (
           <Grid item xs={12}>
-            <Card sx={{ p: 6, textAlign: 'center', bgcolor: '#0f1115' }}>
-              <SchoolIcon sx={{ fontSize: 48, color: '#6e7681', mb: 1 }} />
-              <Typography variant="h6" sx={{ color: '#8b949e' }}>
-                No active training modules available
-              </Typography>
+            <Card sx={{ p: 2, bgcolor: '#0f1115' }}>
+              <EmptyState
+                icon={<SchoolIcon sx={{ fontSize: 28 }} />}
+                title="No training programs available"
+                description="There are currently no active skill modules or certifications published for your department."
+              />
             </Card>
           </Grid>
         ) : (
@@ -176,7 +200,7 @@ const Training = () => {
                     />
                   </Box>
 
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 2, borderTop: '1px solid #f1f5f9' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                       Assigned by <strong>{t.assignedBy?.name || 'Department Head'}</strong>
                     </Typography>
